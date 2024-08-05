@@ -102,10 +102,6 @@ where
         }
 
         if pred(&val_mat[new_r as usize][new_c as usize]) {
-            println!(
-                ":{r}:{c} found matching pred at :{new_r}:{new_c} {:?}",
-                val_mat[new_r as usize][new_c as usize]
-            );
             return true;
         }
     }
@@ -124,14 +120,13 @@ fn part_two() -> Result<(), Box<dyn std::error::Error>> {
     let mut sum = 0;
     for (r, row) in val_mat.iter().enumerate() {
         for (c, _) in row.iter().enumerate() {
-            let Value::Symbol(s) = val_mat[r][c] else {
+            let Value::Symbol(_) = val_mat[r][c] else {
                 continue;
             };
             let (n1, n2) = find_two_numbers(&val_mat, r, c).unwrap_or((0, 0));
             if n1 == 0 || n2 == 0 {
                 continue;
             }
-            println!("Found {} at :{}:{} n1: {:?} n2: {:?}", s, r, c, n1, n2);
             sum += n1 * n2;
         }
     }
