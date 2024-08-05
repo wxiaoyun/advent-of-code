@@ -1,4 +1,9 @@
 **/target
 **/node_modules
 **/vendor
+**/bin
+**/__pycache__
 
+include
+lib
+pyvenv.cfg
