@@ -12,18 +12,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .split("\n")
         .map(|game| {
             let temp = game.split(": ").collect::<Vec<_>>();
+
             let id = temp[0].split(" ").collect::<Vec<_>>()[1]
                 .parse::<u32>()
                 .unwrap();
-            let sets = temp[1].split("; ").collect::<Vec<_>>();
 
-            let temp = sets
-                .into_iter()
+            let sets = temp[1]
+                .split("; ")
                 .map(|set| {
-                    let pairs = set.split(", ").collect::<Vec<_>>();
-
-                    pairs
-                        .into_iter()
+                    set.split(", ")
                         .map(|pair| {
                             let pair = pair.split(" ").collect::<Vec<_>>();
                             let count = pair[0];
@@ -37,7 +34,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .collect::<Vec<Vec<_>>>();
 
             let mut tabulation = std::collections::HashMap::new();
-            for set in temp {
+            for set in sets {
                 for (color, count) in set {
                     let current = tabulation.get(color).unwrap_or(&0);
                     tabulation.insert(color, (*current).max(count));
