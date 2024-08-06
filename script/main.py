@@ -7,7 +7,7 @@ if __name__ == "__main__":
     load_dotenv()
 
     for i in range(1, 26):
-        qn = scrape_advent_of_code(2023, i, session_token=os.getenv('ADVANT_OF_CODE_SESSION'))
+        qn = scrape_advent_of_code(2023, i, session_token=os.getenv('ADVENT_OF_CODE_SESSION'))
 
         if not qn:
           raise Exception(f"Failed to scrape day {i}")
