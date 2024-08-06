@@ -1,5 +1,6 @@
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     part_one()?;
+    part_two()?;
 
     Ok(())
 }
@@ -16,7 +17,7 @@ fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap()
         .split_ascii_whitespace()
         .filter(|s| !s.is_empty())
-        .map(|s| s.parse::<u32>().unwrap());
+        .map(|s| s.parse::<u64>().unwrap());
     let record_distance_inputs = inputs
         .next()
         .unwrap()
@@ -25,7 +26,7 @@ fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         .unwrap()
         .split_ascii_whitespace()
         .filter(|s| !s.is_empty())
-        .map(|s| s.parse::<u32>().unwrap());
+        .map(|s| s.parse::<u64>().unwrap());
     let time_dist = time_inputs.zip(record_distance_inputs).collect::<Vec<_>>();
 
     let mut res = 1;
@@ -41,6 +42,60 @@ fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         res *= tmp;
     }
 
+    println!("Number of ways: {}", res);
+
+    Ok(())
+}
+
+fn part_two() -> Result<(), Box<dyn std::error::Error>> {
+    let inputs = std::fs::read_to_string("../input.txt")?;
+
+    let mut inputs = inputs.lines();
+
+    let total_time = inputs
+        .next()
+        .unwrap()
+        .split(":")
+        .nth(1)
+        .unwrap()
+        .split_ascii_whitespace()
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .join("")
+        .parse::<u64>()?;
+    let record_dist = inputs
+        .next()
+        .unwrap()
+        .split(":")
+        .nth(1)
+        .unwrap()
+        .split_ascii_whitespace()
+        .filter(|s| !s.is_empty())
+        .collect::<Vec<_>>()
+        .join("")
+        .parse::<u64>()?;
+    
+    let mut left = -1;
+    for t in 1..=total_time {
+        let speed = t;
+        let distance = speed * (total_time - t);
+        if distance > record_dist {
+            left = t as i64;
+            break;
+        }
+    }
+
+    let mut right = -1;
+    for t in (1..=total_time).rev() {
+        let speed = t;
+        let distance = speed * (total_time - t);
+        if distance > record_dist {
+            right = t as i64;
+            break;
+        }
+    }
+
+    let res = right - left + 1;
     println!("Number of ways: {}", res);
 
     Ok(())
