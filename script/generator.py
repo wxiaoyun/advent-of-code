@@ -10,15 +10,15 @@ def generate_question_directories(qn: Dict):
   input_data: str = qn["input_data"]
 
   # Create the directory
-  directory = f"./{year}/{day:02d}"
+  directory = f"./{year}/questions"
   os.makedirs(directory, exist_ok=True)
 
   # Write the header
-  with open(f"{directory}/README.md", "w") as f:
+  with open(f"{directory}/{day:02d}.md", "w") as f:
     print(f"Saving question for Advent of Code {year} Day {day}...")
     f.write(f"# [{header}](https://adventofcode.com/{year}/day/{day})\n\n")
     f.write(body)
   
-  with open(f"{directory}/input.txt", "w") as f:
+  with open(f"{directory}/{day:02d}.txt", "w") as f:
     print(f"Saving input for Advent of Code {year} Day {day}...")
     f.write(input_data)
