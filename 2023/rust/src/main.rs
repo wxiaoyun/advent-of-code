@@ -13,7 +13,6 @@ mod prelude;
 
 pub use prelude::*;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    day01::part_one()?;
+fn main() -> Result {
     Ok(())
 }

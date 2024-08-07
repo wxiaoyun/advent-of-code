@@ -8,3 +8,4 @@ rustflags = ["-Z", "unstable-options", "--cfg", "feature=\"btree_cursors\""]
 
 [dependencies]
 num-integer = "0.1.45"
+trie-rs = "0.4.2"
