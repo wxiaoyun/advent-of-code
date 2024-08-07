@@ -56,28 +56,27 @@ pub fn part_two() -> Result {
             return Some(chars[i].to_digit(10).unwrap());
         }
 
-        let mut result = trie
+        let mut result: Option<String> = trie
             .common_prefix_search(chars[i..].iter().collect::<String>())
-            .collect::<Vec<String>>();
+            .last();
 
-        if result.is_empty() {
-            return None;
+        match result {
+            None => None,
+            Some(best_match) => {
+                if let Some(n) = eng_to_num.get(best_match.as_str()).copied() {
+                    return Some(n);
+                }
+
+                if let Some(n) = eng_to_num
+                    .get(best_match.chars().rev().collect::<String>().as_str())
+                    .copied()
+                {
+                    return Some(n);
+                }
+
+                panic!("No number found");
+            }
         }
-
-        let best_match = result.pop().unwrap();
-
-        if let Some(n) = eng_to_num.get(best_match.as_str()).copied() {
-            return Some(n);
-        }
-
-        if let Some(n) = eng_to_num
-            .get(best_match.chars().rev().collect::<String>().as_str())
-            .copied()
-        {
-            return Some(n);
-        }
-
-        panic!("No number found for {:?}", result.pop().unwrap());
     };
 
     let calibration_sum = get_input_for_day(1)
