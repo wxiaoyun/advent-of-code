@@ -3,7 +3,7 @@ use num_integer::Integer;
 use crate::get_input_for_day;
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(8))?;
+    let inputs = get_input_for_day(8);
 
     let mut inputs = inputs.lines().map(|l| l.trim()).filter(|l| !l.is_empty());
     let insts = inputs.next().unwrap().chars().collect::<Vec<_>>();
@@ -39,7 +39,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(8))?;
+    let inputs = get_input_for_day(8);
 
     let mut inputs = inputs.lines().map(|l| l.trim()).filter(|l| !l.is_empty());
     let insts = inputs.next().unwrap().chars().collect::<Vec<_>>();

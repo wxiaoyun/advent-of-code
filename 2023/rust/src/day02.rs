@@ -8,7 +8,7 @@ const BLUE_KEY: &str = "blue";
 const MAX_BLUE: u32 = 14;
 
 fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string(get_input_for_day(2))?;
+    let input = get_input_for_day(2);
 
     let sum = input
         .split("\n")

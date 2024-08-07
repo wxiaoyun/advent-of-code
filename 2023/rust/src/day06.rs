@@ -1,7 +1,7 @@
 use crate::get_input_for_day;
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(6))?;
+    let inputs = get_input_for_day(6);
 
     let mut inputs = inputs.lines();
     let time_inputs = inputs
@@ -43,7 +43,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(6))?;
+    let inputs = get_input_for_day(6);
 
     let mut inputs = inputs.lines();
 
@@ -69,7 +69,7 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         .collect::<Vec<_>>()
         .join("")
         .parse::<u64>()?;
-    
+
     let mut left = -1;
     for t in 1..=total_time {
         let speed = t;

@@ -3,7 +3,7 @@ use std::cmp::Ordering::{self, *};
 use crate::get_input_for_day;
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(7))?;
+    let inputs = get_input_for_day(7);
 
     let hands_and_bid = inputs
         .lines()
@@ -133,7 +133,7 @@ fn cmp_hand(a: &Hand, b: &Hand) -> Ordering {
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(7))?;
+    let inputs = get_input_for_day(7);
 
     let hands_and_bid = inputs
         .lines()

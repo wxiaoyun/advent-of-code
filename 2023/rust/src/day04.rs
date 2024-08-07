@@ -1,7 +1,7 @@
 use crate::get_input_for_day;
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string(get_input_for_day(4))?;
+    let input = get_input_for_day(4);
 
     let res = input
         .lines()
@@ -40,7 +40,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string(get_input_for_day(4))?;
+    let input = get_input_for_day(4);
 
     let input = input
         .lines()

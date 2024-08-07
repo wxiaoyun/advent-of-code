@@ -18,7 +18,7 @@ impl From<char> for Value {
 }
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string(get_input_for_day(3))?;
+    let input = get_input_for_day(3);
 
     let val_mat: Vec<Vec<Value>> = input
         .lines()
@@ -105,7 +105,7 @@ where
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let input = std::fs::read_to_string(get_input_for_day(3))?;
+    let input = get_input_for_day(3);
 
     let val_mat: Vec<Vec<Value>> = input
         .lines()

@@ -1,4 +1,3 @@
-
 use std::cmp::{max, min};
 
 use crate::get_input_for_day;
@@ -13,7 +12,7 @@ const HUMIDITY_PREFIX: &str = "HUMIDITY";
 const LOCATION_PREFIX: &str = "LOCATION";
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(5))?;
+    let inputs = get_input_for_day(5);
 
     // Graph construction
 
@@ -215,7 +214,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = std::fs::read_to_string(get_input_for_day(5))?;
+    let inputs = get_input_for_day(5);
 
     // Graph construction
 

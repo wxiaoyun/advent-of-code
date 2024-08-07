@@ -1,10 +1,9 @@
 use crate::get_input_for_day;
 
 pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let bytes = std::fs::read(get_input_for_day(1))?;
-    let txt: &str = std::str::from_utf8(&bytes)?;
+    let inputs = get_input_for_day(1);
 
-    let calibration_sum = txt
+    let calibration_sum = inputs
         .lines()
         .map(|l| l.chars().filter(|c| c.is_ascii_digit()).collect())
         .collect::<Vec<Vec<char>>>()
