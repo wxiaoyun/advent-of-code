@@ -91,16 +91,15 @@ pub fn part_two() -> Result {
                 .fold(
                     std::collections::HashMap::new(),
                     |mut hm, (color, count)| {
-                        let cur = *hm.entry(color).or_insert(u32::MAX);
-                        hm.insert(color, cur.min(count));
+                        let cur = *hm.entry(color).or_insert(u32::MIN);
+                        hm.insert(color, cur.max(count));
                         hm
                     },
                 )
         })
-        .fold(0, |accum, hm| {
-            hm.iter().fold(1, |prev, (_, v)| prev * v) + accum
-        });
-    
+        .map(|s| s.iter().fold(1, |prev, (_, v)| prev * v))
+        .sum::<u32>();
+
     println!("Sum of power: {}", res);
 
     Ok(())
