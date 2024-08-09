@@ -1,4 +1,4 @@
-use crate::get_input_for_day;
+use crate::{get_input_for_day, Result};
 
 const RED_KEY: &str = "red";
 const MAX_RED: u32 = 12;
@@ -7,7 +7,7 @@ const MAX_GREEN: u32 = 13;
 const BLUE_KEY: &str = "blue";
 const MAX_BLUE: u32 = 14;
 
-fn part_one() -> Result<(), Box<dyn std::error::Error>> {
+pub fn part_one() -> Result {
     let input = get_input_for_day(2);
 
     let sum = input
@@ -66,6 +66,42 @@ fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         .sum::<u32>();
 
     println!("Sum of IDs: {}", sum);
+
+    Ok(())
+}
+
+pub fn part_two() -> Result {
+    let res = get_input_for_day(2)
+        .lines()
+        .map(|l| {
+            l.split(":")
+                .nth(1)
+                .unwrap()
+                .split(";")
+                .flat_map(|s| s.split(","))
+                .map(|pair| {
+                    let mut pair = pair
+                        .split_ascii_whitespace()
+                        .map(|s| s.trim())
+                        .filter(|&s| !s.is_empty());
+                    let count = pair.next().unwrap().parse::<u32>().unwrap();
+                    let color = pair.next().unwrap();
+                    (color, count)
+                })
+                .fold(
+                    std::collections::HashMap::new(),
+                    |mut hm, (color, count)| {
+                        let cur = *hm.entry(color).or_insert(u32::MAX);
+                        hm.insert(color, cur.min(count));
+                        hm
+                    },
+                )
+        })
+        .fold(0, |accum, hm| {
+            hm.iter().fold(1, |prev, (_, v)| prev * v) + accum
+        });
+    
+    println!("Sum of power: {}", res);
 
     Ok(())
 }
