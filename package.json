@@ -4,7 +4,7 @@
   "name": "advent-of-code",
   "version": "1.0.0",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "rs": "cargo run --manifest-path ./2023/rust/Cargo.toml"
   },
   "repository": {
     "type": "git",
