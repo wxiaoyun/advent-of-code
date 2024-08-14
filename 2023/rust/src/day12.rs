@@ -14,7 +14,7 @@ pub fn part_one() -> Result {
                 .collect::<Vec<_>>();
             (arrangement, grouping)
         })
-        .map(|(mut argmt, grp)| permutate(argmt, grp))
+        .map(|(mut argmt, grp)| permutate(&argmt, &grp))
         .sum::<u64>();
 
     println!("Part One: {}", res);
@@ -22,80 +22,121 @@ pub fn part_one() -> Result {
     Ok(())
 }
 
-fn verify(arr: &[char], grouping: &[i64]) -> bool {
-    let mut grouping = std::collections::VecDeque::from(Vec::from(grouping));
-
-    let mut i = 0;
-    while i < arr.len() && arr[i] == '.' {
-        i += 1;
+fn permutate(cfg: &[char], grp: &[i64]) -> u64 {
+    if cfg.is_empty() {
+        return if grp.is_empty() { 1 } else { 0 };
     }
 
-    while i < arr.len() {
-        match arr[i] {
-            '.' => {
-                let first = *grouping.front().unwrap_or(&0);
-                if first != 0 {
-                    return false;
-                }
-                grouping.pop_front();
-                while i < arr.len() && arr[i] == '.' {
-                    i += 1;
-                }
-            }
-            '#' => {
-                *match grouping.get_mut(0) {
-                    Some(x) => x,
-                    None => {
-                        return false;
-                    }
-                } -= 1;
-                i += 1;
-            }
-            _ => panic!("Input vec is not fully permutated: {:?}", arr),
+    if grp.is_empty() {
+        return if cfg.contains(&'#') { 0 } else { 1 };
+    }
+
+    let first = cfg[0];
+    let mut result = 0;
+
+    if ['.', '?'].contains(&first) {
+        result += permutate(&cfg[1..], grp);
+    }
+
+    if ['#', '?'].contains(&first) {
+        let l = grp[0] as usize;
+        if cfg.len() >= l
+            && cfg[0..l].iter().all(|&c| c != '.')
+            && (cfg.len() == l || cfg[l] != '#')
+        {
+            result += permutate(
+                if cfg.len() > l + 1 {
+                    &cfg[l + 1..]
+                } else {
+                    &[]
+                },
+                &grp[1..],
+            )
         }
     }
 
-    for g in grouping {
-        if g != 0 {
-            return false;
-        }
-    }
-
-    true
+    result
 }
 
-pub fn permutate(mut arr: Vec<char>, grouping: Vec<i64>) -> u64 {
-    fn helper(i: usize, arr: &mut Vec<char>, grouping: &Vec<i64>) -> u64 {
-        if i >= arr.len() {
-            return if verify(arr, grouping) { 1 } else { 0 };
-        };
+pub fn part_two() -> Result {
+    let mut permutate = Permutate::new();
+    let res = get_input_for_day(12)
+        .lines()
+        .map(|l| {
+            let mut split = l.split(" ");
+            let arrangement = split.next().unwrap().chars().collect::<String>();
+            let arrangement = (0..5)
+                .map(|_| arrangement.clone())
+                .collect::<Vec<_>>()
+                .join("?")
+                .chars()
+                .collect::<Vec<_>>();
+            let grouping = split
+                .next()
+                .unwrap()
+                .split(",")
+                .map(|s| s.parse::<i64>().unwrap())
+                .collect::<Vec<_>>();
+            let grouping = (0..5).flat_map(|_| grouping.clone()).collect::<Vec<_>>();
+            (arrangement, grouping)
+        })
+        .map(|(mut argmt, grp)| permutate.permutate(&argmt, &grp))
+        .sum::<u64>();
 
-        let '?' = arr[i] else {
-            return helper(i + 1, arr, grouping);
-        };
+    println!("Part Two: {}", res);
 
-        let mut res = 0;
-        for c in ['.', '#'] {
-            let original = arr[i];
-            arr[i] = c;
-            res += helper(i + 1, arr, grouping);
-            arr[i] = original;
-        }
-        res
-    };
-
-    helper(0, &mut arr, &grouping)
+    Ok(())
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+struct Permutate {
+    dp: std::collections::HashMap<(Vec<char>, Vec<i64>), u64>,
+}
 
-    #[test]
-    fn test_verify() {
-        assert!(verify(&['#', '.', '.', '#'], &[1, 1]));
-        assert!(verify(&['#', '#', '.', '#'], &[2, 1]));
-        assert!(verify(&['#', '.', '.', '.'], &[1]));
-        assert!(verify(&['.', '.', '.', '#'], &[1]));
+impl Permutate {
+    pub fn new() -> Self {
+        Self {
+            dp: std::collections::HashMap::new(),
+        }
+    }
+
+    pub fn permutate(&mut self, cfg: &[char], grp: &[i64]) -> u64 {
+        if cfg.is_empty() {
+            return if grp.is_empty() { 1 } else { 0 };
+        }
+
+        if grp.is_empty() {
+            return if cfg.contains(&'#') { 0 } else { 1 };
+        }
+
+        if let Some(&res) = self.dp.get(&(cfg.to_vec(), grp.to_vec())) {
+            return res;
+        }
+
+        let first = cfg[0];
+        let mut result = 0;
+
+        if ['.', '?'].contains(&first) {
+            result += self.permutate(&cfg[1..], grp);
+        }
+
+        if ['#', '?'].contains(&first) {
+            let l = grp[0] as usize;
+            if cfg.len() >= l
+                && cfg[0..l].iter().all(|&c| c != '.')
+                && (cfg.len() == l || cfg[l] != '#')
+            {
+                result += self.permutate(
+                    if cfg.len() > l + 1 {
+                        &cfg[l + 1..]
+                    } else {
+                        &[]
+                    },
+                    &grp[1..],
+                )
+            }
+        }
+
+        self.dp.insert((cfg.to_vec(), grp.to_vec()), result);
+        result
     }
 }

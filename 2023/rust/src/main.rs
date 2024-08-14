@@ -18,6 +18,5 @@ mod prelude;
 pub use prelude::*;
 
 fn main() -> Result {
-    day12::part_one()?;
     Ok(())
 }
