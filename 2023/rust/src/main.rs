@@ -12,10 +12,12 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 mod prelude;
 
 pub use prelude::*;
 
 fn main() -> Result {
+    day12::part_one()?;
     Ok(())
 }
