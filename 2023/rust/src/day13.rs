@@ -66,3 +66,70 @@ fn summarize(mat: Vec<Vec<char>>) -> u64 {
 
     summary
 }
+
+pub fn part_two() -> Result {
+    let res = get_input_for_day(13)
+        .split("\n\n")
+        .map(|chunk| chunk.trim())
+        .filter(|chunk| !chunk.is_empty())
+        .map(|chunk| {
+            chunk
+                .lines()
+                .map(|l| l.chars().collect::<Vec<_>>())
+                .collect::<Vec<_>>()
+        })
+        .map(summarize_unsymmetrical)
+        .sum::<u64>();
+
+    println!("Day 13 Part 1: {}", res);
+
+    Ok(())
+}
+
+fn summarize_unsymmetrical(mat: Vec<Vec<char>>) -> u64 {
+    fn is_symmetric_vertically(mat: &Vec<Vec<char>>, l: i64, r: i64) -> u64 {
+        if l.min(r) < 0 || l.max(r) as usize >= mat[0].len() {
+            return 0; // vacuously true
+        }
+
+        let l = l as usize;
+        let r = r as usize;
+
+        mat.iter()
+            .map(|row| if row[l] == row[r] { 0 } else { 1 })
+            .sum::<u64>()
+            + is_symmetric_vertically(mat, l as i64 - 1, r as i64 + 1)
+    }
+
+    fn is_symmetric_horizontally(mat: &Vec<Vec<char>>, t: i64, b: i64) -> u64 {
+        if t.min(b) < 0 || t.max(b) as usize >= mat.len() {
+            return 0; // vacuously true
+        }
+
+        let t = t as usize;
+        let b = b as usize;
+
+        mat[t]
+            .iter()
+            .zip(mat[b].iter())
+            .map(|(&a, &b)| if a == b { 0 } else { 1 })
+            .sum::<u64>()
+            + is_symmetric_horizontally(mat, t as i64 - 1, b as i64 + 1)
+    }
+
+    let mut summary = 0;
+    for row in 1..mat.len() {
+        if is_symmetric_horizontally(&mat, row as i64 - 1, row as i64) == 1 {
+            summary += (row as u64) * 100;
+            break;
+        }
+    }
+    for col in 1..mat[0].len() {
+        if is_symmetric_vertically(&mat, col as i64 - 1, col as i64) == 1 {
+            summary += col as u64;
+            break;
+        }
+    }
+
+    summary
+}
