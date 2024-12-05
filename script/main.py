@@ -11,7 +11,19 @@ if __name__ == "__main__":
         raise Exception("Please provide the year of the advent of code")
 
     year = args[1]
+    day = args[2] if len(args) >= 2 else ""
     load_dotenv()
+
+    if day:
+        qn = scrape_advent_of_code(
+            year, int(day), session_token=os.getenv("ADVENT_OF_CODE_SESSION")
+        )
+
+        if not qn:
+            raise Exception(f"Failed to scrape day {day}")
+
+        generate_question_directories(qn)
+        sys.exit(0)
 
     for i in range(1, 26):
         qn = scrape_advent_of_code(
@@ -22,3 +34,4 @@ if __name__ == "__main__":
             raise Exception(f"Failed to scrape day {i}")
 
         generate_question_directories(qn)
+    sys.exit(0)
