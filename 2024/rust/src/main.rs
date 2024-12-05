@@ -3,6 +3,7 @@
 mod day01;
 mod day02;
 mod day03;
+mod day04;
 mod prelude;
 
 pub use prelude::*;
@@ -13,7 +14,9 @@ fn main() -> Result {
     // day02::part_one()?;
     // day02::part_two()?;
     // day03::part_one()?;
-    day03::part_two()?;
+    // day03::part_two()?;
+    // day04::part_one()?;
+    day04::part_two()?;
 
     Ok(())
 }
