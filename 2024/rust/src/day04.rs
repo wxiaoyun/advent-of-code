@@ -42,6 +42,10 @@ pub fn part_one() -> Result {
         (1, 0),   // DOWN
         (0, -1),  // LEFT
         (0, 1),   // RIGHT
+        (-1, -1), // UP LEFT
+        (-1, 1),  // UP RIGHT
+        (1, -1),  // DOWN LEFT
+        (1, 1),   // DOWN RIGHT
     ];
 
     let mut xmas_count = 0;
