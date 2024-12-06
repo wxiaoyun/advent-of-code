@@ -1,4 +1,4 @@
-use std::collections::{self, hash_map::Entry, LinkedList};
+use std::collections::{self, hash_map::Entry, LinkedList, VecDeque};
 
 use crate::{get_input_for_day, get_test_input, Result};
 
@@ -44,30 +44,58 @@ pub fn part_one() -> Result {
 }
 
 pub fn part_two() -> Result {
-    // let res = get_test_input(2)
-    //     .split("\n")
-    //     .map(|l| {
-    //         let mut report = l
-    //             .split_ascii_whitespace()
-    //             .map(|n| n.parse::<i32>().unwrap())
-    //             .collect::<LinkedList<_>>();
+    let res = get_input_for_day(2)
+        .split("\n")
+        .map(|l| {
+            let mut report = l
+                .split_ascii_whitespace()
+                .map(|n| n.parse::<i32>().unwrap())
+                .collect::<VecDeque<_>>();
 
-    //         if report.len() < 2 {
-    //             return 1;
-    //         }
+            let mut inc_ok = true; // check inc
+            let mut prev = report[0];
+            let mut errors = 0;
+            for &cur in report.iter().skip(1) {
+                let delta = cur - prev;
+                if (1..=3).contains(&delta) {
+                    prev = cur;
+                } else {
+                    errors += 1;
+                    if errors > 1 {
+                        inc_ok = false;
+                        break;
+                    }
+                }
+            }
 
-    //         let mut reportc = report.clone();
-    //         let is_inc = true;
+            let mut dec_ok = true; // check dec
+            prev = report[0];
+            errors = 0;
+            for &cur in report.iter().skip(1) {
+                let delta = cur - prev;
+                if (-3..0).contains(&delta) {
+                    prev = cur;
+                } else {
+                    // Ignore cur
+                    errors += 1;
+                    if errors > 1 {
+                        dec_ok = false;
+                        break;
+                    }
+                }
+            }
 
-    //         while report.tail.is_some() && report.tail.unwrap().tail
+            if inc_ok || dec_ok {
+                println!("OK {:?}", report);
+                1
+            } else {
+                println!("BAD {:?}", report);
+                0
+            }
+        })
+        .sum::<u32>();
 
-
-
-    //         1
-    //     })
-    //     .sum::<u32>();
-
-    // println!("{}", res);
+    println!("{}", res);
 
     Ok(())
 }
