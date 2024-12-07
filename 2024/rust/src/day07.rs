@@ -39,13 +39,10 @@ pub fn part_one() {
                 .split_ascii_whitespace()
                 .map(|n| n.parse::<i64>().unwrap())
                 .collect::<Vec<_>>();
-
-            if is_possible(target, &mut values) {
-                target
-            } else {
-                0
-            }
+            (target, values)
         })
+        .filter(|(target, values)| is_possible(*target, &mut values.clone()))
+        .map(|(v, _)| v)
         .sum::<i64>();
 
     println!("{}", res);
@@ -97,13 +94,10 @@ pub fn part_two() {
                 .split_ascii_whitespace()
                 .map(|n| n.parse::<i64>().unwrap())
                 .collect::<Vec<_>>();
-
-            if is_possible(target, &mut values) {
-                target
-            } else {
-                0
-            }
+            (target, values)
         })
+        .filter(|(target, values)| is_possible(*target, &mut values.clone()))
+        .map(|(v, _)| v)
         .sum::<i64>();
 
     println!("{}", res);
