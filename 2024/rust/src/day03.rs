@@ -1,6 +1,6 @@
-use crate::{get_input_for_day, get_test_input, Result};
+use crate::{get_input_for_day, get_test_input};
 
-pub fn part_one() -> Result {
+pub fn part_one() {
     let input = get_input_for_day(3);
     let mut input = input.chars().peekable();
 
@@ -54,11 +54,9 @@ pub fn part_one() -> Result {
     }
 
     println!("{}", res);
-
-    Ok(())
 }
 
-pub fn part_two() -> Result {
+pub fn part_two() {
     let input = get_input_for_day(3);
     let mut input = input.chars().peekable();
     let mut res = 0;
@@ -154,6 +152,4 @@ pub fn part_two() -> Result {
     }
 
     println!("{}", res);
-
-    Ok(())
 }

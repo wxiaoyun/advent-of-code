@@ -1,8 +1,8 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input, Result};
+use crate::{get_input_for_day, get_test_input};
 
-pub fn part_one() -> Result {
+pub fn part_one() {
     let map = get_input_for_day(6)
         .split("\n")
         .map(|l| l.chars().collect::<Vec<_>>())
@@ -57,11 +57,9 @@ pub fn part_one() -> Result {
     }
 
     println!("{}", steps);
-
-    Ok(())
 }
 
-pub fn part_two() -> Result {
+pub fn part_two() {
     let mut map = get_input_for_day(6)
         .split("\n")
         .map(|l| l.chars().collect::<Vec<_>>())
@@ -131,6 +129,4 @@ pub fn part_two() -> Result {
     }
 
     println!("{}", loops);
-
-    Ok(())
 }

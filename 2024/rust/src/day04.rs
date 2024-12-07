@@ -1,6 +1,6 @@
-use crate::{get_input_for_day, get_test_input, Result};
+use crate::{get_input_for_day, get_test_input};
 
-pub fn part_one() -> Result {
+pub fn part_one() {
     let matrix = get_input_for_day(4)
         .split("\n")
         .map(|l| l.chars().collect::<Vec<_>>())
@@ -60,11 +60,9 @@ pub fn part_one() -> Result {
     }
 
     println!("{}", xmas_count);
-
-    Ok(())
 }
 
-pub fn part_two() -> Result {
+pub fn part_two() {
     let matrix = get_input_for_day(4)
         .split("\n")
         .map(|l| l.chars().collect::<Vec<_>>())
@@ -77,27 +75,27 @@ pub fn part_two() -> Result {
 
         let target = "MAS";
         let directions = [
-          (-1, -1), // UP LEFT
-          (-1, 1),  // UP RIGHT
-          (1, -1),  // DOWN LEFT
-          (1, 1),   // DOWN RIGHT
+            (-1, -1), // UP LEFT
+            (-1, 1),  // UP RIGHT
+            (1, -1),  // DOWN LEFT
+            (1, 1),   // DOWN RIGHT
         ];
         let mut count = 0;
 
         'outer: for (dy, dx) in directions {
-          let mut nr = r as i32 - dy;
-          let mut nc = c as i32- dx;
+            let mut nr = r as i32 - dy;
+            let mut nc = c as i32 - dx;
 
-          for ch in target.chars() {
-            if matrix[nr as usize][nc as usize] != ch {
-              continue 'outer;
+            for ch in target.chars() {
+                if matrix[nr as usize][nc as usize] != ch {
+                    continue 'outer;
+                }
+                nr += dy;
+                nc += dx;
             }
-            nr += dy;
-            nc += dx;
-          }
 
-          count += 1;
-        };
+            count += 1;
+        }
 
         count >= 2
     }
@@ -115,6 +113,4 @@ pub fn part_two() -> Result {
     }
 
     println!("{}", xmas_count);
-
-    Ok(())
 }

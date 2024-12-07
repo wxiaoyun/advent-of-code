@@ -1,6 +1,6 @@
 use std::collections::{self, hash_map::Entry, LinkedList, VecDeque};
 
-use crate::{get_input_for_day, get_test_input, Result};
+use crate::{get_input_for_day, get_test_input};
 
 fn is_safe_no_removal(report: &[i32]) -> bool {
     if report.len() < 2 {
@@ -27,7 +27,7 @@ fn is_safe_no_removal(report: &[i32]) -> bool {
     true
 }
 
-pub fn part_one() -> Result {
+pub fn part_one() {
     let res = get_input_for_day(2)
         .split("\n")
         .map(|l| {
@@ -45,8 +45,6 @@ pub fn part_one() -> Result {
         .sum::<u32>();
 
     println!("{}", res);
-
-    Ok(())
 }
 
 fn is_safe_with_one_removal(report: &[i32]) -> bool {
@@ -67,7 +65,7 @@ fn is_safe_with_one_removal(report: &[i32]) -> bool {
     false
 }
 
-pub fn part_two() -> Result {
+pub fn part_two() {
     let res = get_input_for_day(2)
         .split("\n")
         .map(|l| {
@@ -85,6 +83,4 @@ pub fn part_two() -> Result {
         .sum::<u32>();
 
     println!("{}", res);
-
-    Ok(())
 }
