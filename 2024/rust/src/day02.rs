@@ -29,7 +29,7 @@ fn is_safe_no_removal(report: &[i32]) -> bool {
 
 pub fn part_one() {
     let res = get_input_for_day(2)
-        .split("\n")
+        .lines()
         .map(|l| {
             let mut report = l
                 .split_ascii_whitespace()
@@ -67,7 +67,7 @@ fn is_safe_with_one_removal(report: &[i32]) -> bool {
 
 pub fn part_two() {
     let res = get_input_for_day(2)
-        .split("\n")
+        .lines()
         .map(|l| {
             let mut report = l
                 .split_ascii_whitespace()

@@ -4,7 +4,7 @@ use crate::{get_input_for_day, get_test_input};
 
 pub fn part_one() {
     let map = get_input_for_day(6)
-        .split("\n")
+        .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
     let nrow = map.len();
@@ -61,7 +61,7 @@ pub fn part_one() {
 
 pub fn part_two() {
     let mut map = get_input_for_day(6)
-        .split("\n")
+        .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
     let nrow = map.len();

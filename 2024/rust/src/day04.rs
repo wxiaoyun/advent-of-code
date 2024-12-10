@@ -2,7 +2,7 @@ use crate::{get_input_for_day, get_test_input};
 
 pub fn part_one() {
     let matrix = get_input_for_day(4)
-        .split("\n")
+        .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
@@ -64,7 +64,7 @@ pub fn part_one() {
 
 pub fn part_two() {
     let matrix = get_input_for_day(4)
-        .split("\n")
+        .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 

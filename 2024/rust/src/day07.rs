@@ -31,7 +31,7 @@ pub fn part_one() {
     let res = get_input_for_day(7)
         .lines()
         .map(|l| {
-            let mut parts = l.split(":");
+            let mut parts = l.split(':');
             let target = parts.next().unwrap().parse::<i64>().unwrap();
             let mut values = parts
                 .next()
@@ -86,7 +86,7 @@ pub fn part_two() {
     let res = get_input_for_day(7)
         .lines()
         .map(|l| {
-            let mut parts = l.split(":");
+            let mut parts = l.split(':');
             let target = parts.next().unwrap().parse::<i64>().unwrap();
             let mut values = parts
                 .next()

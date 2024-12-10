@@ -9,9 +9,9 @@ pub fn part_one() {
     let rules = input
         .next()
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|l| {
-            let mut nums = l.split("|");
+            let mut nums = l.split('|');
             (
                 nums.next().unwrap().parse::<u32>().unwrap(),
                 nums.next().unwrap().parse::<u32>().unwrap(),
@@ -29,9 +29,9 @@ pub fn part_one() {
     let prints = input
         .next()
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|n| n.parse::<u32>().unwrap())
                 .collect::<Vec<_>>()
         })
@@ -69,9 +69,9 @@ pub fn part_two() {
     let rules = input
         .next()
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|l| {
-            let mut nums = l.split("|");
+            let mut nums = l.split('|');
             (
                 nums.next().unwrap().parse::<u32>().unwrap(),
                 nums.next().unwrap().parse::<u32>().unwrap(),
@@ -89,9 +89,9 @@ pub fn part_two() {
     let prints = input
         .next()
         .unwrap()
-        .split("\n")
+        .lines()
         .map(|l| {
-            l.split(",")
+            l.split(',')
                 .map(|n| n.parse::<u32>().unwrap())
                 .collect::<Vec<_>>()
         })

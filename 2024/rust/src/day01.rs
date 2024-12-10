@@ -4,7 +4,7 @@ use crate::{get_input_for_day, get_test_input};
 
 pub fn part_one() {
     let (mut list_a, mut list_b) = get_input_for_day(1)
-        .split("\n")
+        .lines()
         .map(|l| {
             let mut nums = l.split_ascii_whitespace();
             (
@@ -27,7 +27,7 @@ pub fn part_one() {
 
 pub fn part_two() {
     let (mut list_a, mut list_b) = get_input_for_day(1)
-        .split("\n")
+        .lines()
         .map(|l| {
             let mut nums = l.split_ascii_whitespace();
             (
