@@ -11,6 +11,7 @@ mod day08;
 mod day09;
 mod day10;
 mod day11;
+mod day12;
 mod prelude;
 
 pub use prelude::*;
@@ -36,6 +37,7 @@ fn main() {
     // day09::part_two();
     // day10::part_one();
     // day10::part_two();
-    day11::part_one();
-    day11::part_two();
+    // day11::part_one();
+    // day11::part_two();
+    day12::part_one();
 }
