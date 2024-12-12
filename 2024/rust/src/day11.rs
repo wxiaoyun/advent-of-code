@@ -108,11 +108,8 @@ pub fn part_two() {
         stones
     }
 
-    let mut stones = 0;
     let mut dp: collections::HashMap<(String, u64), u64> = collections::HashMap::new();
-    nums.into_iter().for_each(|n| {
-        stones += blink(&mut dp, n, 75);
-    });
+    let stones = nums.into_iter().map(|n| blink(&mut dp, n, 75)).sum::<u64>();
 
     println!("{}", stones);
 }
