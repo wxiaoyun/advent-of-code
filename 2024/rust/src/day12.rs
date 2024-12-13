@@ -1,4 +1,4 @@
-use std::collections;
+use std::{collections, iter};
 
 use crate::{get_input_for_day, get_test_input};
 
@@ -103,4 +103,134 @@ pub fn part_one() {
     println!("{}", price);
 }
 
-pub fn part_two() {}
+const BORDER: char = '.';
+
+pub fn part_two() {
+    let wrapped = get_input_for_day(12)
+        .lines()
+        .map(|l| {
+            let mut v = vec![BORDER];
+            v.extend(l.chars());
+            v.push(BORDER);
+            v
+        })
+        .collect::<Vec<_>>();
+
+    let border_row = iter::repeat(BORDER)
+        .take(wrapped[0].len())
+        .collect::<Vec<_>>();
+    let mut mat = vec![border_row.clone()];
+    mat.extend(wrapped);
+    mat.push(border_row);
+
+    // Assumes i, j is not a border index
+    // Tip from reddit: the number of corners == number of edges
+    fn count_corners(mat: &Vec<Vec<char>>, i: usize, j: usize, target: char) -> u64 {
+        if mat[i][j] != target {
+            return 0;
+        }
+
+        let mut corners = 0;
+        // protruding corner: two immediate neighbors are not target
+        // top left
+        if mat[i - 1][j] != target && mat[i][j - 1] != target {
+            corners += 1;
+        }
+
+        // top right
+        if mat[i - 1][j] != target && mat[i][j + 1] != target {
+            corners += 1;
+        }
+
+        // bottom left
+        if mat[i + 1][j] != target && mat[i][j - 1] != target {
+            corners += 1;
+        }
+
+        // bottom right
+        if mat[i + 1][j] != target && mat[i][j + 1] != target {
+            corners += 1;
+        }
+
+        // concave corner: two immediate neighbors are target, but diagonal is not
+        // top left
+        if mat[i - 1][j] == target && mat[i][j - 1] == target && mat[i - 1][j - 1] != target {
+            corners += 1;
+        }
+
+        // top right
+        if mat[i - 1][j] == target && mat[i][j + 1] == target && mat[i - 1][j + 1] != target {
+            corners += 1;
+        }
+
+        // bottom left
+        if mat[i + 1][j] == target && mat[i][j - 1] == target && mat[i + 1][j - 1] != target {
+            corners += 1;
+        }
+
+        // bottom right
+        if mat[i + 1][j] == target && mat[i][j + 1] == target && mat[i + 1][j + 1] != target {
+            corners += 1;
+        }
+
+        corners
+    }
+
+    fn flood(
+        mat: &Vec<Vec<char>>,
+        visited: &mut Vec<Vec<bool>>,
+        target: char,
+        i: usize,
+        j: usize,
+    ) -> u64 {
+        if visited[i][j] {
+            return 0;
+        }
+
+        let mut area = 0;
+        let mut corners = 0;
+        let mut stack = vec![(i, j)];
+        while let Some((ii, jj)) = stack.pop() {
+            if visited[ii][jj] {
+                continue;
+            }
+
+            area += 1;
+            corners += count_corners(mat, ii, jj, target);
+            visited[ii][jj] = true;
+
+            if mat[ii - 1][jj] == target {
+                stack.push((ii - 1, jj))
+            }
+
+            if mat[ii + 1][jj] == target {
+                stack.push((ii + 1, jj))
+            }
+
+            if mat[ii][jj - 1] == target {
+                stack.push((ii, jj - 1));
+            }
+
+            if mat[ii][jj + 1] == target {
+                stack.push((ii, jj + 1));
+            }
+        }
+
+        area * corners
+    }
+
+    let mut price = 0;
+    let mut visited = mat
+        .iter()
+        .map(|r| r.iter().map(|_| false).collect::<Vec<_>>())
+        .collect::<Vec<_>>();
+    // Skip border
+    for i in 1..mat.len() - 1 {
+        for j in 1..mat[0].len() - 1 {
+            let target = mat[i][j];
+            price += flood(&mat, &mut visited, target, i, j);
+        }
+    }
+
+    println!("{}", price);
+}
