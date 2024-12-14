@@ -56,6 +56,7 @@ pub fn part_one() {
 }
 
 pub fn part_two() {
+    // Gaussian elimination
     fn solve(mut mat: [[f64; 3]; 2], margin_of_error: f64) -> u64 {
         for j in 0..2 {
             let k = mat[j][j];
