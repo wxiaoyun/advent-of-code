@@ -11,3 +11,5 @@ include
 lib
 pyvenv.cfg
 .env
+tmp
+tmp/**
