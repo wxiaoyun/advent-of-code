@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "scripts": {
     "rs": "cargo run --manifest-path ./2024/rust/Cargo.toml",
-    "scrape": "./bin/python3.12 ./script/main.py"
+    "scrape": "./bin/python3 ./script/main.py"
   },
   "repository": {
     "type": "git",
