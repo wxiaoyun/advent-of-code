@@ -230,13 +230,10 @@ pub fn part_two() {
             }
         }
 
-        for &(ii, jj) in best_tiles.iter() {
-            mat[ii][jj] = 'O';
-        }
-
         best_tiles.len()
     }
 
     let res = dijkstra(&mut mat, si, sj, ei, ej);
+    
     println!("{}", res);
 }
