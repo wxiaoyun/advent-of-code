@@ -7,3 +7,12 @@ pub fn get_input_for_day(day: u32) -> String {
 pub fn get_test_input(day: u32) -> String {
     std::fs::read_to_string(format!("{}/{:0>2}.test.txt", INPUT_DIR, day)).unwrap()
 }
+
+pub fn print_mat(mat: &Vec<Vec<char>>) {
+  for row in mat {
+    for ch in row {
+      print!("{ch}");
+    }
+    println!();
+  }
+}
