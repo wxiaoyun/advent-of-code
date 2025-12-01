@@ -12,3 +12,11 @@ pub struct Args {
 pub fn parse_args() -> Args {
     Args::parse()
 }
+
+pub fn read_input(year: impl Into<u32>, day: impl Into<u8>) -> String {
+    std::fs::read_to_string(format!("{:?}/questions/{:?}.txt", year.into(), day.into())).unwrap()
+}
+
+pub fn read_test_input(year: impl Into<u32>, day: impl Into<u8>) -> String {
+    std::fs::read_to_string(format!("{:?}/questions/{:?}_test.txt", year.into(), day.into())).unwrap()
+}
