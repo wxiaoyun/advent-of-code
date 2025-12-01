@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output-dir", type=str)
     args = parser.parse_args()
 
-    cargo_args = ["cargo", "run", "-p", "scraper"]
+    cargo_args = ["cargo", "run", "-p", "scraper", "--release"]
     scraper_args = [
         "--",
         "--year",
