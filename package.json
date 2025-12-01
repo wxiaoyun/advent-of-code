@@ -3,10 +3,6 @@
   "license": "MIT",
   "name": "advent-of-code",
   "version": "1.0.0",
-  "scripts": {
-    "rs": "cargo run --manifest-path ./2024/rust/Cargo.toml",
-    "scrape": "./bin/python3 ./script/main.py"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wxiaoyun/advant-of-code.git"

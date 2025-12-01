@@ -5,7 +5,7 @@
 **/bin
 **/__pycache__
 **/.DS_Store
-**/questions/**
+**/questions/
 
 include
 lib

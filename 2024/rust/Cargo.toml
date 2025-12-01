@@ -1,6 +1,8 @@
 [package]
-name = "rust"
+name = "aoc-2024"
+edition = { workspace = true }
 
 [dependencies]
 image = { workspace = true }
 regex = { workspace = true }
+util = { path = "../../crate/util" }

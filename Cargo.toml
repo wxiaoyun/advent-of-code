@@ -1,14 +1,22 @@
-[package]
-name = "aoc"
+[workspace]
+resolver = "3"
+members = ["2023/rust", "2024/rust", "2025/rust", "crate/scraper", "crate/util"]
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
+authors = ["wxiaoyun"]
+license = "MIT"
+keywords = ["advent of code"]
 
-[dependencies]
+[workspace.dependencies]
+futures = "0.3"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+tap = "1"
 image = "0.25"
 regex = "1"
 num-integer = "0.1"
 trie-rs = "0.4"
-
-[workspace]
-resolver = "3"
-members = ["2023/rust", "2024/rust"]

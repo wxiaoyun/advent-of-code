@@ -1,0 +1,10 @@
+[package]
+name = "util"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+
+[dependencies]
+clap = { workspace = true }
