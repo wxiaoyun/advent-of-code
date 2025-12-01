@@ -1,0 +1,15 @@
+[package]
+name = "scraper"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+keywords.workspace = true
+
+[dependencies]
+futures = { workspace = true }
+tokio = { workspace = true }
+reqwest = { workspace = true }
+anyhow = { workspace = true }
+clap = { workspace = true }
+tap = { workspace = true }
