@@ -1,7 +1,33 @@
+#!/usr/bin/env python3
+
+import os
+import sys
 import time
-import requests
-from bs4 import BeautifulSoup
 import re
+import requests
+from typing import Dict
+from dotenv import load_dotenv
+from bs4 import BeautifulSoup
+
+
+def generate_question_directories(qn: Dict):
+    year: int = qn["year"]
+    day: int = qn["day"]
+    header: str = qn["header"]
+    body: str = qn["body"]
+    input_data: str = qn["input_data"]
+
+    directory = f"./{year}/questions"
+    os.makedirs(directory, exist_ok=True)
+
+    with open(f"{directory}/{day:02d}.md", "w") as f:
+        print(f"Saving question for Advent of Code {year} Day {day}...")
+        f.write(f"# [{header}](https://adventofcode.com/{year}/day/{day})\n\n")
+        f.write(body)
+
+    with open(f"{directory}/{day:02d}.txt", "w") as f:
+        print(f"Saving input for Advent of Code {year} Day {day}...")
+        f.write(input_data)
 
 
 def scrape_advent_of_code(
@@ -50,6 +76,10 @@ def scrape_advent_of_code(
             }
 
         except requests.RequestException as e:
+            if e.response is not None and e.response.status_code == 404:
+                print(f"No question found for day {day}")
+                return None
+
             print(f"Attempt {attempt + 1} failed for day {day}: {str(e)}")
             if attempt < max_retries - 1:
                 print(f"Retrying in {delay} seconds...")
@@ -57,3 +87,37 @@ def scrape_advent_of_code(
             else:
                 print(f"Failed to scrape day {day} after {max_retries} attempts")
                 return None
+
+
+if __name__ == "__main__":
+    args = sys.argv
+
+    if len(args) < 2:
+        raise Exception("Please provide the year of the advent of code")
+
+    year = args[1]
+    day = args[2] if len(args) >= 3 else ""
+    load_dotenv()
+
+    if day:
+        qn = scrape_advent_of_code(
+            year, int(day), session_token=os.getenv("ADVENT_OF_CODE_SESSION")
+        )
+
+        if not qn:
+            raise Exception(f"Failed to scrape day {day}")
+
+        generate_question_directories(qn)
+        sys.exit(0)
+
+    for i in range(1, 26):
+        qn = scrape_advent_of_code(
+            year, i, session_token=os.getenv("ADVENT_OF_CODE_SESSION")
+        )
+
+        if not qn:
+            print(f"Failed to scrape day {i}.")
+            break
+
+        generate_question_directories(qn)
+    sys.exit(0)
