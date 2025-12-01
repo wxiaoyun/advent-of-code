@@ -1,4 +1,4 @@
-pub const INPUT_DIR: &str = "./2023/questions";
+pub const INPUT_DIR: &str = "./2023/input";
 
 pub type Result<Ok = ()> = std::result::Result<Ok, Box<dyn std::error::Error>>;
 

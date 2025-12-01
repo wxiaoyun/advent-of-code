@@ -40,7 +40,7 @@ async fn main() -> Result<()> {
     let delay = args.delay;
     let output_dir = args
         .output_dir
-        .unwrap_or(format!("{}/questions", args.year).into());
+        .unwrap_or(format!("{}/{}", args.year, util::INPUT_FOLDER_NAME).into());
 
     if tokio::fs::try_exists(&output_dir).await.unwrap_or(false) {
         tokio::fs::create_dir_all(&output_dir).await?;

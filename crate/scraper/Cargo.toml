@@ -13,3 +13,4 @@ reqwest = { workspace = true }
 anyhow = { workspace = true }
 clap = { workspace = true }
 tap = { workspace = true }
+util = { path = "../util" }

@@ -1,4 +1,4 @@
-pub const INPUT_DIR: &str = "./2024/questions";
+pub const INPUT_DIR: &str = "./2024/input";
 
 pub fn get_input_for_day(day: u32) -> String {
     std::fs::read_to_string(format!("{}/{}.txt", INPUT_DIR, day)).unwrap()
