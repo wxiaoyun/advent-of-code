@@ -7,7 +7,6 @@ use reqwest::{
     Client,
     header::{HeaderMap, HeaderName, HeaderValue},
 };
-use tap::Tap;
 use tokio::sync::OnceCell;
 
 #[derive(Parser, Debug)]
@@ -41,12 +40,11 @@ async fn main() -> Result<()> {
     let delay = args.delay;
     let output_dir = args
         .output_dir
-        .unwrap_or(format!("{}/questions", args.year).into())
-        .tap(|path| {
-            if !path.exists() {
-                std::fs::create_dir_all(path).unwrap()
-            }
-        });
+        .unwrap_or(format!("{}/questions", args.year).into());
+
+    if tokio::fs::try_exists(&output_dir).await.unwrap_or(false) {
+        tokio::fs::create_dir_all(&output_dir).await?;
+    }
 
     REQWEST_CLIENT
         .get_or_init(|| async move {
