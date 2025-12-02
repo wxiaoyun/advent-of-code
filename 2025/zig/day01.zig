@@ -10,7 +10,7 @@ pub fn main() !void {
     const args = try util.parseArgs(alloc);
     defer args.deinit();
 
-    const input = try util.readInput(alloc, 2025, 1);
+    const input = try util.readInput(alloc, args.options.year, args.options.day);
     defer alloc.free(input);
 
     const result = switch (args.options.part) {

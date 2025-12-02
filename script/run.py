@@ -23,7 +23,7 @@ def run_zig(year: int, day: int, part: int, fast: bool = False) -> None:
     if fast == True:
         zig_args.append("--release=fast")
 
-    sub_cmd_args = ["--", "-p", str(part)]
+    sub_cmd_args = ["--", "--year", str(year), "--day", str(day), "--part", str(part)]
     zig_args.extend(sub_cmd_args)
 
     result = subprocess.run(zig_args)

@@ -3,9 +3,13 @@ const std = @import("std");
 const argsParser = @import("args");
 
 const ArgSpec = struct {
+    year: u32 = 2025,
+    day: u8 = 1,
     part: u8 = 1,
 
     pub const shorthands = .{
+        .y = "year",
+        .d = "day",
         .p = "part",
     };
 };
