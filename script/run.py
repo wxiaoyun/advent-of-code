@@ -11,7 +11,7 @@ def run_rust(year: int, day: int, part: int, fast: bool = False) -> None:
     if fast == True:
         cargo_args.extend(["--release"])
 
-    sub_cmd_args = ["--", "--day", str(day), "--part", str(part)]
+    sub_cmd_args = ["--", "--year", str(year), "--day", str(day), "--part", str(part)]
     cargo_args.extend(sub_cmd_args)
 
     result = subprocess.run(cargo_args)

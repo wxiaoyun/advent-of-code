@@ -16,9 +16,10 @@ reqwest = { version = "0.12", features = ["json"] }
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"
 indoc = "2"
-
 tap = "1"
-image = "0.25"
 regex = "1"
+extfn = "0.1"
+
+image = "0.25"
 num-integer = "0.1"
 trie-rs = "0.4"

@@ -6,3 +6,4 @@ edition = { workspace = true }
 [dependencies]
 util = { path = "../../crate/util" }
 indoc.workspace = true
+extfn.workspace = true

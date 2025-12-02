@@ -4,6 +4,8 @@ use clap::Parser;
 #[command(version)]
 pub struct Args {
     #[arg(short, long)]
+    pub year: u32,
+    #[arg(short, long)]
     pub day: u8,
     #[arg(short, long, default_value = "1")]
     pub part: u8,
