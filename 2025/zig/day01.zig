@@ -13,14 +13,16 @@ pub fn main() !void {
     const input = try util.readInput(alloc, 2025, 1);
     defer alloc.free(input);
 
-    switch (args.options.part) {
+    const result = switch (args.options.part) {
         1 => try part1(alloc, input),
         2 => try part2(alloc, input),
         else => @panic("Illegal part"),
-    }
+    };
+
+    std.debug.print("Result: {}\n", .{result});
 }
 
-fn part1(_: std.mem.Allocator, input: []const u8) !void {
+fn part1(_: std.mem.Allocator, input: []const u8) !i64 {
     var lines = std.mem.splitSequence(u8, input, "\n");
 
     var zero_cnt: i64 = 0;
@@ -29,7 +31,7 @@ fn part1(_: std.mem.Allocator, input: []const u8) !void {
         if (line.len == 0) break;
 
         const dir: i64 = if (line[0] == 'L') -1 else 1;
-        const step = std.fmt.parseInt(i64, line[1..], 10) catch @panic("Failed to parse step");
+        const step = try std.fmt.parseInt(i64, line[1..], 10);
 
         cur_dial = @mod(cur_dial + dir * step, 100);
         if (cur_dial == 0) {
@@ -37,10 +39,10 @@ fn part1(_: std.mem.Allocator, input: []const u8) !void {
         }
     }
 
-    std.debug.print("Zero count: {}\n", .{zero_cnt});
+    return zero_cnt;
 }
 
-fn part2(_: std.mem.Allocator, input: []const u8) !void {
+fn part2(_: std.mem.Allocator, input: []const u8) !i64 {
     var lines = std.mem.splitSequence(u8, input, "\n");
 
     var zero_cnt: i64 = 0;
@@ -49,7 +51,7 @@ fn part2(_: std.mem.Allocator, input: []const u8) !void {
         if (line.len == 0) break;
 
         const dir: i64 = if (line[0] == 'L') -1 else 1;
-        const step = std.fmt.parseInt(i64, line[1..], 10) catch @panic("Failed to parse step");
+        const step = try std.fmt.parseInt(i64, line[1..], 10);
 
         const n_cross_over = switch (dir) {
             1 => @divFloor(cur_dial + step, 100),
@@ -61,5 +63,28 @@ fn part2(_: std.mem.Allocator, input: []const u8) !void {
         zero_cnt += n_cross_over;
     }
 
-    std.debug.print("Zero count: {}\n", .{zero_cnt});
+    return zero_cnt;
+}
+
+const test_input =
+    \\L68
+    \\L30
+    \\R48
+    \\L5
+    \\R60
+    \\L55
+    \\L1
+    \\L99
+    \\R14
+    \\L82
+;
+
+test part1 {
+    const alc = std.testing.allocator;
+    try std.testing.expectEqual(3, try part1(alc, test_input));
+}
+
+test part2 {
+    const alc = std.testing.allocator;
+    try std.testing.expectEqual(6, try part2(alc, test_input));
 }
