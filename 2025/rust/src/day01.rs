@@ -1,6 +1,5 @@
-pub fn part_one() {
-    let input = util::read_input(2025u32, 1);
-    let rotations = input.lines().map(|l| {
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let rotations = input.as_ref().lines().map(|l| {
         let dir = match l.chars().next().unwrap() {
             'L' => -1,
             'R' => 1,
@@ -20,12 +19,11 @@ pub fn part_one() {
         }
     }
 
-    println!("{zero_cnt}");
+    zero_cnt
 }
 
-pub fn part_two() {
-    let input = util::read_input(2025u32, 1);
-    let rotations = input.lines().map(|l| {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let rotations = input.as_ref().lines().map(|l| {
         let dir = match l.chars().next().unwrap() {
             'L' => -1,
             'R' => 1,
@@ -47,5 +45,33 @@ pub fn part_two() {
         cur_dial = (cur_dial + dir * step).rem_euclid(100)
     }
 
-    println!("{zero_cnt}");
+    zero_cnt as i64
+}
+
+#[cfg(test)]
+mod test {
+    use indoc::indoc;
+
+    const TEST_INPUT: &str = indoc! {"
+        L68
+        L30
+        R48
+        L5
+        R60
+        L55
+        L1
+        L99
+        R14
+        L82
+    "};
+
+    #[test]
+    fn test_part1() {
+        assert_eq!(3, super::part_one(TEST_INPUT));
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(6, super::part_two(TEST_INPUT));
+    }
 }

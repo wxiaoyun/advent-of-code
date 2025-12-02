@@ -15,18 +15,9 @@ pub fn parse_args() -> Args {
 
 pub const INPUT_FOLDER_NAME: &str = "input";
 
-pub fn read_input(year: impl Into<u32>, day: impl Into<u8>) -> String {
+pub fn read_input(year: impl Into<i64>, day: impl Into<i64>) -> String {
     std::fs::read_to_string(format!(
         "{:?}/{INPUT_FOLDER_NAME}/{:?}.txt",
-        year.into(),
-        day.into()
-    ))
-    .unwrap()
-}
-
-pub fn read_test_input(year: impl Into<u32>, day: impl Into<u8>) -> String {
-    std::fs::read_to_string(format!(
-        "{:?}/{INPUT_FOLDER_NAME}/{:?}_test.txt",
         year.into(),
         day.into()
     ))

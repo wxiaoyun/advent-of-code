@@ -15,6 +15,8 @@ tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.12", features = ["json"] }
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"
+indoc = "2"
+
 tap = "1"
 image = "0.25"
 regex = "1"
