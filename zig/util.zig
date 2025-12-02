@@ -14,8 +14,6 @@ pub fn parseArgs() !Args {
     return Args{ .part = part };
 }
 
-pub const INPUT_FOLDER_NAME: []const u8 = "input";
-
 pub fn readInputFromStdin(allocator: std.mem.Allocator) ![]u8 {
     const stdin = std.fs.File.stdin();
     const stat = try stdin.stat();
