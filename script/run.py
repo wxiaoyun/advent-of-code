@@ -7,20 +7,35 @@ from datetime import datetime
 
 
 def run_rust(year: int, day: int, part: int, fast: bool = False) -> None:
-    args = ["cargo", "run", "-p", f"aoc-{year}"]
+    cargo_args = ["cargo", "run", "-p", f"aoc-{year}"]
     if fast == True:
-        args.extend(["--release"])
+        cargo_args.extend(["--release"])
 
     sub_cmd_args = ["--", "--day", str(day), "--part", str(part)]
-    args.extend(sub_cmd_args)
+    cargo_args.extend(sub_cmd_args)
 
-    completed_process = subprocess.run(args)
-    sys.exit(completed_process.returncode)
+    result = subprocess.run(cargo_args)
+    sys.exit(result.returncode)
 
+
+def run_zig(year: int, day: int, part: int, fast: bool = False) -> None:
+    zig_args = ["zig", "build", f"aoc-{year}-{day}"]
+    if fast == True:
+        zig_args.append("--release=fast")
+
+    sub_cmd_args = ["--", "-p", str(part)]
+    zig_args.extend(sub_cmd_args)
+
+    result = subprocess.run(zig_args)
+    sys.exit(result.returncode)
+
+
+runners = {
+    "rust": run_rust,
+    "zig": run_zig,
+}
 
 if __name__ == "__main__":
-    runners = {"rust": run_rust}
-
     parser = argparse.ArgumentParser(prog="AoC solution runner")
     parser.add_argument("language", choices=runners.keys())
     parser.add_argument("-y", "--year", default=datetime.now().year, type=int)
