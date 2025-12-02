@@ -10,7 +10,7 @@ pub fn main() !void {
     const args = try util.parseArgs(alloc);
     defer args.deinit();
 
-    const input = util.readInput(alloc, 2025, 1);
+    const input = try util.readInput(alloc, 2025, 1);
     defer alloc.free(input);
 
     switch (args.options.part) {

@@ -17,15 +17,15 @@ pub fn parseArgs(allocator: std.mem.Allocator) !argsParser.ParseArgsResult(ArgSp
 
 pub const INPUT_FOLDER_NAME: []const u8 = "input";
 
-pub fn readInput(allocator: std.mem.Allocator, year: u32, day: u8) []const u8 {
-    const file_path = std.fmt.allocPrint(allocator, "{d}/{s}/{d}.txt", .{ year, INPUT_FOLDER_NAME, day }) catch @panic("Failed to allocate file path");
+pub fn readInput(allocator: std.mem.Allocator, year: u32, day: u8) ![]const u8 {
+    const file_path = try std.fmt.allocPrint(allocator, "{d}/{s}/{d}.txt", .{ year, INPUT_FOLDER_NAME, day });
     defer allocator.free(file_path);
 
     const cwd = std.fs.cwd();
-    const input = cwd.readFileAlloc(
+    const input = try cwd.readFileAlloc(
         allocator,
         file_path,
         std.math.maxInt(usize),
-    ) catch @panic("Failed to read input");
+    );
     return input;
 }
