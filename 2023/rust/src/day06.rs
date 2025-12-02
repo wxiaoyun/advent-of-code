@@ -1,7 +1,5 @@
-use crate::get_input_for_day;
-
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(6);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let mut inputs = inputs.lines();
     let time_inputs = inputs
@@ -37,13 +35,11 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         res *= tmp;
     }
 
-    println!("Number of ways: {}", res);
-
-    Ok(())
+    res as i64
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(6);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let mut inputs = inputs.lines();
 
@@ -57,7 +53,8 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|s| !s.is_empty())
         .collect::<Vec<_>>()
         .join("")
-        .parse::<u64>()?;
+        .parse::<u64>()
+        .unwrap();
     let record_dist = inputs
         .next()
         .unwrap()
@@ -68,7 +65,8 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         .filter(|s| !s.is_empty())
         .collect::<Vec<_>>()
         .join("")
-        .parse::<u64>()?;
+        .parse::<u64>()
+        .unwrap();
 
     let mut left = -1;
     for t in 1..=total_time {
@@ -91,7 +89,5 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     let res = right - left + 1;
-    println!("Number of ways: {}", res);
-
-    Ok(())
+    res
 }

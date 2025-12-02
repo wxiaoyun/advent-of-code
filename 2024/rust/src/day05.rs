@@ -1,9 +1,7 @@
 use std::collections::{self, HashMap, HashSet};
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let input = get_input_for_day(5);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.split("\n\n");
 
     let rules = input
@@ -59,11 +57,11 @@ pub fn part_one() {
         sum += pts[pts.len() / 2];
     }
 
-    println!("{}", sum);
+    sum as i64
 }
 
-pub fn part_two() {
-    let input = get_input_for_day(5);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.split("\n\n");
 
     let rules = input
@@ -144,5 +142,5 @@ pub fn part_two() {
         }
     }
 
-    println!("{}", sum);
+    sum as i64
 }

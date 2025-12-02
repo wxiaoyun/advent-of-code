@@ -1,7 +1,6 @@
-use crate::{get_input_for_day, get_test_input, Result};
-
-pub fn part_one() -> Result {
-    let universe_mat = get_input_for_day(11)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let universe_mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -27,9 +26,7 @@ pub fn part_one() -> Result {
         }
     }
 
-    println!("Total distance: {}", total_distance);
-
-    Ok(())
+    total_distance as i64
 }
 
 fn expand_universe(universe: Vec<Vec<char>>) -> Vec<Vec<char>> {
@@ -62,8 +59,9 @@ fn expand_universe(universe: Vec<Vec<char>>) -> Vec<Vec<char>> {
     new_universe2
 }
 
-pub fn part_two() -> Result {
-    let universe_mat = get_input_for_day(11)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let universe_mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -101,9 +99,7 @@ pub fn part_two() -> Result {
         }
     }
 
-    println!("Total distance: {}", total_distance);
-
-    Ok(())
+    total_distance as i64
 }
 
 fn expand_universe2(mut universe: Vec<Vec<char>>) -> Vec<Vec<String>> {

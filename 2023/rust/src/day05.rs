@@ -1,7 +1,5 @@
 use std::cmp::{max, min};
 
-use crate::get_input_for_day;
-
 const SEED_PREFIX: &str = "SEED";
 const SOIL_PREFIX: &str = "SOIL";
 const FERTILIZER_PREFIX: &str = "FERTILIZER";
@@ -11,8 +9,8 @@ const TEMP_PREFIX: &str = "TEMP";
 const HUMIDITY_PREFIX: &str = "HUMIDITY";
 const LOCATION_PREFIX: &str = "LOCATION";
 
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(5);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     // Graph construction
 
@@ -208,13 +206,11 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    println!("lowest_location {}", lowest_location);
-
-    Ok(())
+    lowest_location as i64
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(5);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     // Graph construction
 
@@ -439,7 +435,5 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    println!("lowest_location {}", lowest_location);
-
-    Ok(())
+    lowest_location as i64
 }

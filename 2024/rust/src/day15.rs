@@ -1,14 +1,12 @@
 use std::{collections::HashSet, f64::consts::E, vec};
 
-use crate::{get_input_for_day, get_test_input};
-
 const WALL: char = '#';
 const BOX: char = 'O';
 const EMPTY: char = '.';
 const ROBOT: char = '@';
 
-pub fn part_one() {
-    let input = get_input_for_day(15);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.split("\n\n");
 
     let mut i = 0;
@@ -79,23 +77,23 @@ pub fn part_one() {
         operate(&mut mat, op, &mut i, &mut j);
     }
 
-    let mut gps_sum = 0;
+    let mut gps_sum = 0_i64;
     for (r, row) in mat.iter().enumerate() {
         for (c, &ch) in row.iter().enumerate() {
             if ch == BOX {
-                gps_sum += (r * 100) + c;
+                gps_sum += (r as i64 * 100) + c as i64;
             }
         }
     }
 
-    println!("{}", gps_sum);
+    gps_sum
 }
 
 const BOX_L: char = '[';
 const BOX_R: char = ']';
 
-pub fn part_two() {
-    let input = get_input_for_day(15);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.split("\n\n");
 
     let mut i = 0;
@@ -212,16 +210,16 @@ pub fn part_two() {
         j = res.1;
     }
 
-    let mut gps_sum = 0;
+    let mut gps_sum = 0_i64;
     for (r, row) in mat.iter().enumerate() {
         for (c, &ch) in row.iter().enumerate() {
             if ch == BOX_L {
-                gps_sum += (r * 100) + c;
+                gps_sum += (r as i64 * 100) + c as i64;
             }
         }
     }
 
-    println!("{}", gps_sum);
+    gps_sum
 }
 
 fn print_mat(mat: &Vec<Vec<char>>) {

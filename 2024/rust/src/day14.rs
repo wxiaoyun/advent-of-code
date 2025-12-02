@@ -1,8 +1,6 @@
 use image::{Rgb, RgbImage};
 use std::iter;
 
-use crate::{get_input_for_day, get_test_input};
-
 struct Robot {
     pos_x: i64,
     pos_y: i64,
@@ -23,8 +21,9 @@ impl Robot {
     }
 }
 
-pub fn part_one() {
-    let safety_factor: u64 = get_input_for_day(14)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let safety_factor: u64 = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut parts = l.split_ascii_whitespace();
@@ -55,10 +54,10 @@ pub fn part_one() {
         .iter()
         .product();
 
-    println!("{}", safety_factor);
+    safety_factor as i64
 }
 
-pub fn part_two() {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
     fn draw_simulate(robots: &mut Vec<Robot>, canvas: &mut Vec<Vec<u8>>, tick: usize) {
         for r in robots.iter() {
             canvas[r.pos_y as usize][r.pos_x as usize] = 0;
@@ -86,7 +85,8 @@ pub fn part_two() {
         img.save(file_name).unwrap();
     }
 
-    let mut robots = get_input_for_day(14)
+    let mut robots = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut parts = l.split_ascii_whitespace();
@@ -107,7 +107,9 @@ pub fn part_two() {
     let mut canvas = iter::repeat(row.clone()).take(103).collect::<Vec<_>>();
     for _ in 0..10000 {
         draw_simulate(&mut robots, &mut canvas, ticks);
-        println!("{} ticks", ticks);
         ticks += 1;
     }
+
+    // This part's result is intended to be read from generated images; return 0 as placeholder.
+    0
 }

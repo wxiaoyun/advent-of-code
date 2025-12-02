@@ -1,9 +1,8 @@
 use std::collections::{self, hash_map::Entry};
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let (mut list_a, mut list_b) = get_input_for_day(1)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let (mut list_a, mut list_b) = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut nums = l.split_ascii_whitespace();
@@ -21,12 +20,12 @@ pub fn part_one() {
         .into_iter()
         .zip(list_b)
         .fold(0, |prev, (a, b)| prev + (if a > b { a - b } else { b - a }));
-
-    println!("{}", res);
+    res as i64
 }
 
-pub fn part_two() {
-    let (mut list_a, mut list_b) = get_input_for_day(1)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let (mut list_a, mut list_b) = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut nums = l.split_ascii_whitespace();
@@ -48,6 +47,5 @@ pub fn part_two() {
     let res = list_a
         .into_iter()
         .fold(0_u32, |sum, n| sum + n * *dict_b.entry(n).or_default());
-
-    println!("{}", res);
+    res as i64
 }

@@ -1,9 +1,7 @@
 use std::collections::HashMap;
 
-use crate::{get_input_for_day, Result};
-
-pub fn part_one() -> Result {
-    let inputs = get_input_for_day(1);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let calibration_sum = inputs
         .lines()
@@ -17,11 +15,10 @@ pub fn part_one() -> Result {
         })
         .sum::<u32>();
 
-    println!("Sum of first and last digits: {}", calibration_sum);
-    Ok(())
+    calibration_sum as i64
 }
 
-pub fn part_two() -> Result {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
     use trie_rs::*;
 
     let eng_to_num = std::collections::HashMap::from([
@@ -79,7 +76,8 @@ pub fn part_two() -> Result {
         }
     };
 
-    let calibration_sum = get_input_for_day(1)
+    let calibration_sum = input
+        .as_ref()
         .lines()
         .map(|l| {
             let chars = l.chars();
@@ -91,7 +89,5 @@ pub fn part_two() -> Result {
         })
         .sum::<u32>();
 
-    println!("Sum of first and last digits: {}", calibration_sum);
-
-    Ok(())
+    calibration_sum as i64
 }

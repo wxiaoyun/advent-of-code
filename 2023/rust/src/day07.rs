@@ -1,9 +1,7 @@
 use std::cmp::Ordering::{self, *};
 
-use crate::get_input_for_day;
-
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(7);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let hands_and_bid = inputs
         .lines()
@@ -36,9 +34,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         res += bid * rank as u32;
     }
 
-    println!("Total: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]
@@ -132,8 +128,8 @@ fn cmp_hand(a: &Hand, b: &Hand) -> Ordering {
     }
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(7);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let hands_and_bid = inputs
         .lines()
@@ -166,9 +162,7 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         res += bid * rank as u32;
     }
 
-    println!("Total: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq)]

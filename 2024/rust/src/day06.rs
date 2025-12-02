@@ -1,9 +1,8 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let map = get_input_for_day(6)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let map = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -56,11 +55,12 @@ pub fn part_one() {
         }
     }
 
-    println!("{}", steps);
+    steps as i64
 }
 
-pub fn part_two() {
-    let mut map = get_input_for_day(6)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mut map = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -128,5 +128,5 @@ pub fn part_two() {
         }
     }
 
-    println!("{}", loops);
+    loops as i64
 }

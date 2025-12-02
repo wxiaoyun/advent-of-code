@@ -27,7 +27,7 @@ pub struct Args {
     #[arg(short = 'D', long, default_value = "5")]
     pub delay: u8,
     #[arg(short, long, help = "The directory to save the scraped data.")]
-    pub output_dir: Option<PathBuf>,
+    pub output_dir: PathBuf,
 }
 
 static REQWEST_CLIENT: OnceCell<Client> = OnceCell::const_new();
@@ -38,9 +38,7 @@ async fn main() -> Result<()> {
     let session_token = args.session_token;
     let max_retries = args.max_retries;
     let delay = args.delay;
-    let output_dir = args
-        .output_dir
-        .unwrap_or(format!("{}/{}", args.year, util::INPUT_FOLDER_NAME).into());
+    let output_dir = args.output_dir;
 
     if tokio::fs::try_exists(&output_dir).await.unwrap_or(false) {
         tokio::fs::create_dir_all(&output_dir).await?;

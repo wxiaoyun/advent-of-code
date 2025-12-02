@@ -1,5 +1,3 @@
-use crate::{get_input_for_day, get_test_input};
-
 #[derive(Debug, Clone)]
 struct Machine {
     a: usize,
@@ -96,8 +94,8 @@ fn run(m: &mut Machine) -> bool {
     false
 }
 
-pub fn part_one() {
-    let input = get_input_for_day(17);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.split("\n\n");
 
     let mut reg = input.next().unwrap().lines().map(|l| {
@@ -129,12 +127,11 @@ pub fn part_one() {
 
     while !run(&mut machine) {}
 
+    // Original output is a comma-separated string; encode it into a numeric value.
     let res = machine
         .out
         .iter()
-        .map(|n| format!("{}", n))
-        .collect::<Vec<_>>()
-        .join(",");
+        .fold(0_i64, |acc, n| acc * 10 + *n as i64);
 
-    println!("{}", res);
+    res
 }

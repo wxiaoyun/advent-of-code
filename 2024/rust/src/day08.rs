@@ -1,9 +1,8 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let mat = get_input_for_day(8)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -28,7 +27,7 @@ pub fn part_one() {
         for i in 0..l.len() {
             for j in 0..l.len() {
                 if i == j {
-                  continue;
+                    continue;
                 }
 
                 let (i1, j1) = (l[i].0 as i32, l[i].1 as i32);
@@ -50,11 +49,12 @@ pub fn part_one() {
         }
     });
 
-    println!("{}", count);
+    count as i64
 }
 
-pub fn part_two() {
-    let mat = get_input_for_day(8)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -79,7 +79,7 @@ pub fn part_two() {
         for i in 0..l.len() {
             for j in 0..l.len() {
                 if i == j {
-                  continue;
+                    continue;
                 }
 
                 let (i1, j1) = (l[i].0 as i32, l[i].1 as i32);
@@ -101,5 +101,5 @@ pub fn part_two() {
         }
     });
 
-    println!("{}", count);
+    count as i64
 }

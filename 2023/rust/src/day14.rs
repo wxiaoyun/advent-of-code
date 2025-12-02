@@ -1,16 +1,13 @@
-use crate::{get_input_for_day, get_test_input, Result};
-
-pub fn part_one() -> Result {
-    let mut mat = get_input_for_day(14)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mut mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
 
     tilt_north(&mut mat);
 
-    println!("Part one: {}", calculate_load(&mat));
-
-    Ok(())
+    calculate_load(&mat) as i64
 }
 
 fn tilt_north(mat: &mut [Vec<char>]) {
@@ -55,8 +52,9 @@ fn calculate_load(mat: &[Vec<char>]) -> u64 {
         .sum::<u64>()
 }
 
-pub fn part_two() -> Result {
-    let mut mat = get_input_for_day(14)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mut mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -83,9 +81,7 @@ pub fn part_two() -> Result {
 
     let idx = (1_000_000_000 - cycle_start) % cycle_len;
     let mat = mapping.get(&(cycle_start + idx)).unwrap();
-    println!("Part two: {}", calculate_load(mat));
-
-    Ok(())
+    calculate_load(mat) as i64
 }
 
 fn rotate_90_deg_clockwise(mat: Vec<Vec<char>>) -> Vec<Vec<char>> {

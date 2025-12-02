@@ -1,7 +1,6 @@
-use crate::{get_input_for_day, get_test_input, Result};
-
-pub fn part_one() -> Result {
-    let res = get_input_for_day(13)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .split("\n\n")
         .map(|chunk| chunk.trim())
         .filter(|chunk| !chunk.is_empty())
@@ -14,9 +13,7 @@ pub fn part_one() -> Result {
         .map(summarize)
         .sum::<u64>();
 
-    println!("Day 13 Part 1: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 fn summarize(mat: Vec<Vec<char>>) -> u64 {
@@ -67,8 +64,9 @@ fn summarize(mat: Vec<Vec<char>>) -> u64 {
     summary
 }
 
-pub fn part_two() -> Result {
-    let res = get_input_for_day(13)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .split("\n\n")
         .map(|chunk| chunk.trim())
         .filter(|chunk| !chunk.is_empty())
@@ -81,9 +79,7 @@ pub fn part_two() -> Result {
         .map(summarize_unsymmetrical)
         .sum::<u64>();
 
-    println!("Day 13 Part 1: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 fn summarize_unsymmetrical(mat: Vec<Vec<char>>) -> u64 {

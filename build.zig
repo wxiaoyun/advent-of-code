@@ -4,12 +4,7 @@ pub fn build(b: *std.Build) void {
     const t = b.standardTargetOptions(.{});
     const o = b.standardOptimizeOption(.{});
 
-    const arg_parser_dep = b.dependency("args", .{
-        .target = t,
-        .optimize = o,
-    });
-
-    const util_mod = b.addModule("util", .{ .root_source_file = b.path("zig/util.zig"), .target = t, .imports = &.{.{ .name = "args", .module = arg_parser_dep.module("args") }} });
+    const util_mod = b.addModule("util", .{ .root_source_file = b.path("zig/util.zig"), .target = t });
 
     const common_imports: []const std.Build.Module.Import = &.{.{ .name = "util", .module = util_mod }};
 

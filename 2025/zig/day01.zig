@@ -7,13 +7,11 @@ pub fn main() !void {
     const alloc = gpa.allocator();
     defer _ = gpa.deinit();
 
-    const args = try util.parseArgs(alloc);
-    defer args.deinit();
-
-    const input = try util.readInput(alloc, args.options.year, args.options.day);
+    const args = try util.parseArgs();
+    const input = try util.readInputFromStdin(alloc);
     defer alloc.free(input);
 
-    const result = switch (args.options.part) {
+    const result = switch (args.part) {
         1 => try part1(alloc, input),
         2 => try part2(alloc, input),
         else => @panic("Illegal part"),

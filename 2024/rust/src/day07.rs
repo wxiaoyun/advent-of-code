@@ -1,8 +1,6 @@
 use std::{ascii, collections::VecDeque};
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
+pub fn part_one(input: impl AsRef<str>) -> i64 {
     fn is_possible(target: i64, values: &mut Vec<i64>) -> bool {
         if values.is_empty() {
             return false;
@@ -28,7 +26,8 @@ pub fn part_one() {
         possible
     }
 
-    let res = get_input_for_day(7)
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut parts = l.split(':');
@@ -45,10 +44,10 @@ pub fn part_one() {
         .map(|(v, _)| v)
         .sum::<i64>();
 
-    println!("{}", res);
+    res
 }
 
-pub fn part_two() {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
     fn is_possible(target: i64, values: &mut Vec<i64>) -> bool {
         if values.is_empty() {
             return false;
@@ -83,7 +82,8 @@ pub fn part_two() {
         possible
     }
 
-    let res = get_input_for_day(7)
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut parts = l.split(':');
@@ -100,5 +100,5 @@ pub fn part_two() {
         .map(|(v, _)| v)
         .sum::<i64>();
 
-    println!("{}", res);
+    res
 }

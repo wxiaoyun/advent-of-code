@@ -1,7 +1,5 @@
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let input = get_input_for_day(3);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.chars().peekable();
 
     let mut res = 0;
@@ -53,11 +51,11 @@ pub fn part_one() {
         res += num1 * num2;
     }
 
-    println!("{}", res);
+    res as i64
 }
 
-pub fn part_two() {
-    let input = get_input_for_day(3);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
     let mut input = input.chars().peekable();
     let mut res = 0;
     let mut do_mul = true;
@@ -151,5 +149,5 @@ pub fn part_two() {
         }
     }
 
-    println!("{}", res);
+    res as i64
 }

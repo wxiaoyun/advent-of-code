@@ -1,18 +1,15 @@
 use std::str::FromStr;
 
-use crate::{get_input_for_day, get_test_input, Result};
-
-pub fn part_one() -> Result {
-    let res = get_input_for_day(15)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .split(",")
         .map(|part| part.trim())
         .filter(|l| !l.is_empty())
         .map(|l| hash(l.to_owned()))
         .sum::<u64>();
 
-    println!("Day 15, Part 1: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 fn hash(s: String) -> u64 {
@@ -23,8 +20,9 @@ fn hash(s: String) -> u64 {
     })
 }
 
-pub fn part_two() -> Result {
-    let (res, _) = get_input_for_day(15)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let (res, _) = input
+        .as_ref()
         .split(",")
         .map(|part| part.trim())
         .filter(|part| !part.is_empty())
@@ -79,8 +77,7 @@ pub fn part_two() -> Result {
         })
     });
 
-    println!("Day 15, Part 2: {}", res);
-    Ok(())
+    res as i64
 }
 
 enum Instruction {

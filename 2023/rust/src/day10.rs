@@ -1,11 +1,10 @@
-use crate::{get_input_for_day, Result};
-
-pub fn part_one() -> Result {
+pub fn part_one(input: impl AsRef<str>) -> i64 {
     let mut src = (-1, -1);
     let mut rows = -1;
     let mut cols = -1;
 
-    let lookup = get_input_for_day(10)
+    let lookup = input
+        .as_ref()
         .lines()
         .map(|l| l.trim().chars().enumerate().collect::<Vec<_>>())
         .enumerate()
@@ -60,7 +59,5 @@ pub fn part_one() -> Result {
         }
     }
 
-    println!("Longest loop: {}", longest);
-
-    Ok(())
+    longest
 }

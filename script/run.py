@@ -6,27 +6,33 @@ import argparse
 from datetime import datetime
 
 
-def run_rust(year: int, day: int, part: int, fast: bool = False) -> None:
-    cargo_args = ["cargo", "run", "-p", f"aoc-{year}"]
-    if fast == True:
+def get_input_path(args: argparse.Namespace) -> str:
+    from scrape import INPUT_FOLDER_NAME
+
+    return f"{args.year}/{INPUT_FOLDER_NAME}/{args.day}.txt"
+
+
+def run_rust(args: argparse.Namespace) -> None:
+    cargo_args = ["cargo", "run", "-p", f"aoc-{args.year}"]
+    if args.fast == True:
         cargo_args.extend(["--release"])
 
-    sub_cmd_args = ["--", "--year", str(year), "--day", str(day), "--part", str(part)]
+    sub_cmd_args = ["--", str(args.day), str(args.part)]
     cargo_args.extend(sub_cmd_args)
 
-    result = subprocess.run(cargo_args)
+    result = subprocess.run(cargo_args, stdin=open(get_input_path(args), "r"))
     sys.exit(result.returncode)
 
 
-def run_zig(year: int, day: int, part: int, fast: bool = False) -> None:
-    zig_args = ["zig", "build", f"aoc-{year}-{day}"]
-    if fast == True:
+def run_zig(args: argparse.Namespace) -> None:
+    zig_args = ["zig", "build", f"aoc-{args.year}-{args.day}"]
+    if args.fast == True:
         zig_args.append("--release=fast")
 
-    sub_cmd_args = ["--", "--year", str(year), "--day", str(day), "--part", str(part)]
+    sub_cmd_args = ["--", str(args.part)]
     zig_args.extend(sub_cmd_args)
 
-    result = subprocess.run(zig_args)
+    result = subprocess.run(zig_args, stdin=open(get_input_path(args), "r"))
     sys.exit(result.returncode)
 
 
@@ -51,4 +57,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     runner = runners[args.language]
-    runner(args.year, args.day, args.part, args.fast)
+    runner(args)

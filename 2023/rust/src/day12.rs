@@ -1,7 +1,6 @@
-use crate::{get_input_for_day, get_test_input, Result};
-
-pub fn part_one() -> Result {
-    let res = get_input_for_day(12)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut split = l.split(" ");
@@ -17,9 +16,7 @@ pub fn part_one() -> Result {
         .map(|(mut argmt, grp)| permutate(&argmt, &grp))
         .sum::<u64>();
 
-    println!("Part One: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 fn permutate(cfg: &[char], grp: &[i64]) -> u64 {
@@ -58,9 +55,10 @@ fn permutate(cfg: &[char], grp: &[i64]) -> u64 {
     result
 }
 
-pub fn part_two() -> Result {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
     let mut permutate = Permutate::new();
-    let res = get_input_for_day(12)
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut split = l.split(" ");
@@ -83,9 +81,7 @@ pub fn part_two() -> Result {
         .map(|(mut argmt, grp)| permutate.permutate(&argmt, &grp))
         .sum::<u64>();
 
-    println!("Part Two: {}", res);
-
-    Ok(())
+    res as i64
 }
 
 struct Permutate {

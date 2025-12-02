@@ -1,9 +1,7 @@
 use num_integer::Integer;
 
-use crate::get_input_for_day;
-
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(8);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let mut inputs = inputs.lines().map(|l| l.trim()).filter(|l| !l.is_empty());
     let insts = inputs.next().unwrap().chars().collect::<Vec<_>>();
@@ -33,13 +31,11 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         steps += 1;
     }
 
-    println!("Steps: {}", steps);
-
-    Ok(())
+    steps as i64
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let inputs = get_input_for_day(8);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let inputs = input.as_ref();
 
     let mut inputs = inputs.lines().map(|l| l.trim()).filter(|l| !l.is_empty());
     let insts = inputs.next().unwrap().chars().collect::<Vec<_>>();
@@ -77,7 +73,5 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         })
         .fold(1, |accum, steps| accum.lcm(&steps));
 
-    println!("Steps: {}", steps);
-
-    Ok(())
+    steps as i64
 }

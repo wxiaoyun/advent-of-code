@@ -1,9 +1,8 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let mat = get_input_for_day(10)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mat = input
+        .as_ref()
         .lines()
         .map(|l| {
             l.chars()
@@ -44,7 +43,7 @@ pub fn part_one() {
         s
     }
 
-    let mut res = 0;
+    let mut res = 0_u32;
     let mut visited: collections::HashSet<(usize, usize)> = collections::HashSet::new();
     for i in 0..mat.len() {
         for j in 0..mat[0].len() {
@@ -53,11 +52,12 @@ pub fn part_one() {
         }
     }
 
-    println!("{}", res);
+    res as i64
 }
 
-pub fn part_two() {
-    let mat = get_input_for_day(10)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mat = input
+        .as_ref()
         .lines()
         .map(|l| {
             l.chars()
@@ -87,12 +87,12 @@ pub fn part_two() {
         s
     }
 
-    let mut res = 0;
+    let mut res = 0_u32;
     for i in 0..mat.len() {
         for j in 0..mat[0].len() {
             res += score(&mat, i as i32, j as i32, 0);
         }
     }
 
-    println!("{}", res);
+    res as i64
 }

@@ -1,27 +1,28 @@
-use clap::Parser;
+use std::io::Read;
 
-#[derive(Parser, Debug)]
-#[command(version)]
 pub struct Args {
-    #[arg(short, long)]
-    pub year: u32,
-    #[arg(short, long)]
     pub day: u8,
-    #[arg(short, long, default_value = "1")]
     pub part: u8,
 }
 
 pub fn parse_args() -> Args {
-    Args::parse()
+    let mut args = std::env::args();
+    let day = args
+        .nth(1)
+        .and_then(|s| s.parse::<u8>().ok())
+        .expect("Positional argument day is required");
+    let part = args
+        .next()
+        .and_then(|s| s.parse::<u8>().ok())
+        .expect("Positional argument part is required");
+
+    Args { day, part }
 }
 
-pub const INPUT_FOLDER_NAME: &str = "input";
-
-pub fn read_input(year: impl Into<i64>, day: impl Into<i64>) -> String {
-    std::fs::read_to_string(format!(
-        "{:?}/{INPUT_FOLDER_NAME}/{:?}.txt",
-        year.into(),
-        day.into()
-    ))
-    .unwrap()
+pub fn read_input_from_stdin() -> String {
+    let mut buf = Vec::new();
+    std::io::stdin()
+        .read_to_end(&mut buf)
+        .expect("Failed to read input from stdin");
+    String::from_utf8(buf).expect("Failed to convert input to string")
 }

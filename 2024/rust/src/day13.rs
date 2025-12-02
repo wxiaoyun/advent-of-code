@@ -1,6 +1,4 @@
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
+pub fn part_one(input: impl AsRef<str>) -> i64 {
     fn solve(target_x: u64, target_y: u64, a_x: u64, a_y: u64, b_x: u64, b_y: u64) -> u64 {
         let mut tokens = u64::MAX;
 
@@ -13,15 +11,12 @@ pub fn part_one() {
             }
         }
 
-        if tokens == u64::MAX {
-            0
-        } else {
-            tokens
-        }
+        if tokens == u64::MAX { 0 } else { tokens }
     }
 
     let re = regex::Regex::new(r"[XY][+=](\d+)").unwrap();
-    let tokens = get_input_for_day(13)
+    let tokens = input
+        .as_ref()
         .split("\n\n")
         .map(|p| {
             let mut l = p.lines();
@@ -52,10 +47,10 @@ pub fn part_one() {
         })
         .sum::<u64>();
 
-    println!("{}", tokens);
+    tokens as i64
 }
 
-pub fn part_two() {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
     // Gaussian elimination
     fn solve(mut mat: [[f64; 3]; 2], margin_of_error: f64) -> u64 {
         for j in 0..2 {
@@ -87,7 +82,8 @@ pub fn part_two() {
     }
 
     let re = regex::Regex::new(r"[XY][+=](\d+)").unwrap();
-    let tokens = get_input_for_day(13)
+    let tokens = input
+        .as_ref()
         .split("\n\n")
         .map(|p| {
             let mut l = p.lines();
@@ -130,5 +126,5 @@ pub fn part_two() {
         .map(|mut m| solve(m, 0.01))
         .sum::<u64>();
 
-    println!("{}", tokens);
+    tokens as i64
 }

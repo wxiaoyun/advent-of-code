@@ -1,12 +1,13 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input, print_mat};
+use crate::print_mat;
 
 const GRID_SIZE: usize = 71;
 const BYTES_TAKEN: usize = 1024;
 
-pub fn part_one() {
-    let bytes = get_input_for_day(18)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let bytes = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut nums = l.split(',').map(|n| n.parse::<u64>().unwrap());
@@ -24,8 +25,7 @@ pub fn part_one() {
         }
 
         if i == GRID_SIZE - 1 && j == GRID_SIZE - 1 {
-            println!("Part one: {}", s);
-            break;
+            return s as i64;
         }
 
         if visited.contains(&(i, j)) {
@@ -41,10 +41,13 @@ pub fn part_one() {
             }
         }
     }
+
+    -1
 }
 
-pub fn part_two() {
-    let bytes = get_input_for_day(18)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let bytes = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut nums = l.split(',').map(|n| n.parse::<u64>().unwrap());
@@ -101,5 +104,6 @@ pub fn part_two() {
         }
     }
 
-    println!("Part two: {}, {:?}", l-1, bytes[l-1]);
+    // We encode the blocking byte index as i64; caller can decode from original input if needed.
+    (l as i64) - 1
 }

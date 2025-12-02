@@ -1,6 +1,4 @@
-use crate::{get_input_for_day, Result};
-
-pub fn part_one() -> Result {
+pub fn part_one(input: impl AsRef<str>) -> i64 {
     fn predict_next(vals: Vec<i64>) -> i64 {
         let mut is_all_zeros = true;
         let mut delta = (0..(vals.len() - 1))
@@ -19,7 +17,8 @@ pub fn part_one() -> Result {
         last + if is_all_zeros { 0 } else { predict_next(delta) }
     }
 
-    let res = get_input_for_day(9)
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             l.split_ascii_whitespace()
@@ -31,12 +30,10 @@ pub fn part_one() -> Result {
         .map(predict_next)
         .sum::<i64>();
 
-    println!("Sum of predictions (next): {}", res);
-
-    Ok(())
+    res
 }
 
-pub fn part_two() -> Result {
+pub fn part_two(input: impl AsRef<str>) -> i64 {
   fn predict_prev(vals: Vec<i64>) -> i64 {
     let mut is_all_zeros = true;
     let mut delta = (0..(vals.len() - 1))
@@ -55,7 +52,8 @@ pub fn part_two() -> Result {
     first - if is_all_zeros { 0 } else { predict_prev(delta) }
 }
 
-let res = get_input_for_day(9)
+let res = input
+    .as_ref()
     .lines()
     .map(|l| {
         l.split_ascii_whitespace()
@@ -67,7 +65,5 @@ let res = get_input_for_day(9)
     .map(predict_prev)
     .sum::<i64>();
 
-println!("Sum of predictions (prev): {}", res);
-
-Ok(())
+res
 }

@@ -1,7 +1,5 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input};
-
 #[derive(Clone, Debug)]
 struct Node {
     val: String,
@@ -9,8 +7,9 @@ struct Node {
     next: Option<usize>,
 }
 
-pub fn part_one() {
-    let nums = get_input_for_day(11)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let nums = input
+        .as_ref()
         .split_ascii_whitespace()
         .map(|s| s.to_owned())
         .collect::<Vec<_>>();
@@ -65,15 +64,16 @@ pub fn part_one() {
         }
     }
 
-    for i in 0..25 {
+    for _ in 0..25 {
         apply_rules(&mut heap);
     }
 
-    println!("{}", heap.len());
+    heap.len() as i64
 }
 
-pub fn part_two() {
-    let nums = get_input_for_day(11)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let nums = input
+        .as_ref()
         .split_ascii_whitespace()
         .map(|s| s.to_owned())
         .collect::<Vec<_>>();
@@ -111,5 +111,5 @@ pub fn part_two() {
     let mut dp: collections::HashMap<(String, u64), u64> = collections::HashMap::new();
     let stones = nums.into_iter().map(|n| blink(&mut dp, n, 75)).sum::<u64>();
 
-    println!("{}", stones);
+    stones as i64
 }

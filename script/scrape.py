@@ -7,6 +7,8 @@ import argparse
 from datetime import datetime
 import dotenv
 
+INPUT_FOLDER_NAME = "input"
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="AoC question scraper")
     parser.add_argument("-y", "--year", default=datetime.now().year, type=int)
@@ -30,6 +32,8 @@ if __name__ == "__main__":
         str(args.max_retries),
         "--delay",
         str(args.delay),
+        "--output-dir",
+        f"{args.year}/{INPUT_FOLDER_NAME}",
     ]
 
     if not args.session_token:
@@ -44,10 +48,6 @@ if __name__ == "__main__":
     if args.day:
         scraper_args.extend(["--day", str(args.day)])
 
-    if args.output_dir:
-        scraper_args.extend(["--output-dir", args.output_dir])
-
     cargo_args.extend(scraper_args)
     result = subprocess.run(cargo_args)
-
     sys.exit(result.returncode)

@@ -1,9 +1,8 @@
 use std::{collections, iter};
 
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let mut mat = get_input_for_day(12)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mut mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().map(|c| c.to_string()).collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -100,13 +99,14 @@ pub fn part_one() {
         .map(|(c, area)| calc_perimeter(&mat, c.clone()) * area)
         .sum::<u64>();
 
-    println!("{}", price);
+    price as i64
 }
 
 const BORDER: char = '.';
 
-pub fn part_two() {
-    let wrapped = get_input_for_day(12)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let wrapped = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut v = vec![BORDER];
@@ -232,5 +232,5 @@ pub fn part_two() {
         }
     }
 
-    println!("{}", price);
+    price as i64
 }

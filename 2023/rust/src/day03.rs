@@ -1,5 +1,3 @@
-use crate::get_input_for_day;
-
 #[derive(PartialEq, Debug, Clone)]
 enum Value {
     Symbol(char),
@@ -17,8 +15,8 @@ impl From<char> for Value {
     }
 }
 
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let input = get_input_for_day(3);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
 
     let val_mat: Vec<Vec<Value>> = input
         .lines()
@@ -64,9 +62,7 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    println!("(Part one) Sum of engine schematic {:?}", sum);
-
-    Ok(())
+    sum as i64
 }
 
 fn check_arround<F>(val_mat: &[Vec<Value>], r: usize, c: usize, pred: F) -> bool
@@ -104,8 +100,8 @@ where
     false
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let input = get_input_for_day(3);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
 
     let val_mat: Vec<Vec<Value>> = input
         .lines()
@@ -126,9 +122,7 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    println!("(Part two) Sum of engine schematic {:?}", sum);
-
-    Ok(())
+    sum as i64
 }
 
 fn find_two_numbers(val_mat: &[Vec<Value>], r: usize, c: usize) -> Option<(u32, u32)> {

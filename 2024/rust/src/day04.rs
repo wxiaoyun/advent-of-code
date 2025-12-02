@@ -1,7 +1,6 @@
-use crate::{get_input_for_day, get_test_input};
-
-pub fn part_one() {
-    let matrix = get_input_for_day(4)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let matrix = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -59,11 +58,12 @@ pub fn part_one() {
         }
     }
 
-    println!("{}", xmas_count);
+    xmas_count as i64
 }
 
-pub fn part_two() {
-    let matrix = get_input_for_day(4)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let matrix = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -112,5 +112,5 @@ pub fn part_two() {
         }
     }
 
-    println!("{}", xmas_count);
+    xmas_count as i64
 }

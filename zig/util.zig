@@ -1,35 +1,26 @@
 const std = @import("std");
 
-const argsParser = @import("args");
-
-const ArgSpec = struct {
-    year: u32 = 2025,
-    day: u8 = 1,
+const Args = struct {
     part: u8 = 1,
-
-    pub const shorthands = .{
-        .y = "year",
-        .d = "day",
-        .p = "part",
-    };
 };
 
-pub fn parseArgs(allocator: std.mem.Allocator) !argsParser.ParseArgsResult(ArgSpec, null) {
-    const options = try argsParser.parseForCurrentProcess(ArgSpec, allocator, .print);
-    return options;
+pub fn parseArgs() !Args {
+    if (std.os.argv.len < 2) {
+        @panic("Positional argument part is required");
+    }
+
+    const part_str = std.mem.span(std.os.argv[1]);
+    const part = try std.fmt.parseInt(u8, part_str, 10);
+    return Args{ .part = part };
 }
 
 pub const INPUT_FOLDER_NAME: []const u8 = "input";
 
-pub fn readInput(allocator: std.mem.Allocator, year: u32, day: u8) ![]const u8 {
-    const file_path = try std.fmt.allocPrint(allocator, "{d}/{s}/{d}.txt", .{ year, INPUT_FOLDER_NAME, day });
-    defer allocator.free(file_path);
+pub fn readInputFromStdin(allocator: std.mem.Allocator) ![]u8 {
+    const stdin = std.fs.File.stdin();
+    const stat = try stdin.stat();
 
-    const cwd = std.fs.cwd();
-    const input = try cwd.readFileAlloc(
-        allocator,
-        file_path,
-        std.math.maxInt(usize),
-    );
-    return input;
+    var reader_buf: [1024]u8 = undefined;
+    var reader = stdin.reader(&reader_buf);
+    return try reader.interface.readAlloc(allocator, stat.size);
 }

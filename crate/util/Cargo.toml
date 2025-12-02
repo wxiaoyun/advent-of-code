@@ -7,4 +7,3 @@ license.workspace = true
 keywords.workspace = true
 
 [dependencies]
-clap = { workspace = true }

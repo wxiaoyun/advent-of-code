@@ -1,6 +1,6 @@
 use std::collections;
 
-use crate::{get_input_for_day, get_test_input, print_mat};
+use crate::print_mat;
 
 const START: char = 'S';
 const END: char = 'E';
@@ -11,8 +11,9 @@ const DOWN: u8 = 2;
 const LEFT: u8 = 3;
 const DIRECTIONS: [u8; 4] = [UP, RIGHT, DOWN, LEFT];
 
-pub fn part_one() {
-    let mat = get_input_for_day(16)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -104,11 +105,12 @@ pub fn part_one() {
     }
 
     let res = dijkstra(&mat, si, sj, ei, ej);
-    println!("{}", res);
+    res as i64
 }
 
-pub fn part_two() {
-    let mut mat = get_input_for_day(16)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mut mat = input
+        .as_ref()
         .lines()
         .map(|l| l.chars().collect::<Vec<_>>())
         .collect::<Vec<_>>();
@@ -168,8 +170,13 @@ pub fn part_two() {
         end_j: usize,
     ) -> usize {
         let mut visited: collections::HashSet<(usize, usize, u8)> = collections::HashSet::new();
-        let mut pq: collections::BinaryHeap<(i64, usize, usize, u8, Option<(i64, usize, usize, u8)>)> =
-            collections::BinaryHeap::from([(0, start_i, start_j, RIGHT, None)]);
+        let mut pq: collections::BinaryHeap<(
+            i64,
+            usize,
+            usize,
+            u8,
+            Option<(i64, usize, usize, u8)>,
+        )> = collections::BinaryHeap::from([(0, start_i, start_j, RIGHT, None)]);
 
         let mut prev: collections::HashMap<(i64, usize, usize, u8), Vec<(i64, usize, usize, u8)>> =
             collections::HashMap::new();
@@ -234,6 +241,6 @@ pub fn part_two() {
     }
 
     let res = dijkstra(&mut mat, si, sj, ei, ej);
-    
-    println!("{}", res);
+
+    res as i64
 }

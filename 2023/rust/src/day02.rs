@@ -1,4 +1,3 @@
-use crate::{get_input_for_day, Result};
 
 const RED_KEY: &str = "red";
 const MAX_RED: u32 = 12;
@@ -7,8 +6,8 @@ const MAX_GREEN: u32 = 13;
 const BLUE_KEY: &str = "blue";
 const MAX_BLUE: u32 = 14;
 
-pub fn part_one() -> Result {
-    let input = get_input_for_day(2);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
 
     let sum = input
         .split("\n")
@@ -65,13 +64,12 @@ pub fn part_one() -> Result {
         .map(|(id, _)| id)
         .sum::<u32>();
 
-    println!("Sum of IDs: {}", sum);
-
-    Ok(())
+    sum as i64
 }
 
-pub fn part_two() -> Result {
-    let res = get_input_for_day(2)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
+    let res = input
         .lines()
         .map(|l| {
             l.split(":")
@@ -100,7 +98,5 @@ pub fn part_two() -> Result {
         .map(|s| s.iter().fold(1, |prev, (_, v)| prev * v))
         .sum::<u32>();
 
-    println!("Sum of power: {}", res);
-
-    Ok(())
+    res as i64
 }

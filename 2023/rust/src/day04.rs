@@ -1,7 +1,5 @@
-use crate::get_input_for_day;
-
-pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
-    let input = get_input_for_day(4);
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
 
     let res = input
         .lines()
@@ -34,13 +32,11 @@ pub fn part_one() -> Result<(), Box<dyn std::error::Error>> {
         })
         .sum::<u64>();
 
-    println!("(Part one) Sum of points {}", res);
-
-    Ok(())
+    res as i64
 }
 
-pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
-    let input = get_input_for_day(4);
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let input = input.as_ref();
 
     let input = input
         .lines()
@@ -101,7 +97,5 @@ pub fn part_two() -> Result<(), Box<dyn std::error::Error>> {
         res += process_card(&mut cache, &input, *card);
     }
 
-    println!("(Part two) Sum of points {}", res);
-
-    Ok(())
+    res as i64
 }

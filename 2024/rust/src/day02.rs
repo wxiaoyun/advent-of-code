@@ -1,6 +1,4 @@
-use std::collections::{self, hash_map::Entry, LinkedList, VecDeque};
-
-use crate::{get_input_for_day, get_test_input};
+use std::collections::{self, LinkedList, VecDeque, hash_map::Entry};
 
 fn is_safe_no_removal(report: &[i32]) -> bool {
     if report.len() < 2 {
@@ -27,8 +25,9 @@ fn is_safe_no_removal(report: &[i32]) -> bool {
     true
 }
 
-pub fn part_one() {
-    let res = get_input_for_day(2)
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut report = l
@@ -36,15 +35,11 @@ pub fn part_one() {
                 .map(|n| n.parse::<i32>().unwrap())
                 .collect::<Vec<_>>();
 
-            if is_safe_no_removal(&report) {
-                1
-            } else {
-                0
-            }
+            if is_safe_no_removal(&report) { 1 } else { 0 }
         })
         .sum::<u32>();
 
-    println!("{}", res);
+    res as i64
 }
 
 fn is_safe_with_one_removal(report: &[i32]) -> bool {
@@ -65,8 +60,9 @@ fn is_safe_with_one_removal(report: &[i32]) -> bool {
     false
 }
 
-pub fn part_two() {
-    let res = get_input_for_day(2)
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let res = input
+        .as_ref()
         .lines()
         .map(|l| {
             let mut report = l
@@ -82,5 +78,5 @@ pub fn part_two() {
         })
         .sum::<u32>();
 
-    println!("{}", res);
+    res as i64
 }
