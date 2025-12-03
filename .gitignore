@@ -1,20 +1,28 @@
-**/target
-**/dist
-**/node_modules
+**/lib/
+**/bin/
 **/vendor
-**/bin
-**/__pycache__
-**/.DS_Store
-**/questions/
 **/input/
+**/tmp/
+**/.DS_Store
 
-include
-lib
+
+# Python
+**/__pycache__/
+include/
 pyvenv.cfg
 .venv/
 .env
-tmp
-tmp/**
 
+# JS/TS
+dist/
+node_modules/
+
+# Rust
+target/
+
+# Zig
 .zig-cache/
 zig-out/
+
+# Ocaml
+_build/
