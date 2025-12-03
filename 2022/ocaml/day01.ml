@@ -1,5 +1,5 @@
-let part_one _ = print_endline "test 2"
-let part_two _ = print_endline "test 2"
+let part_one _ = failwith "part one unimplemented"
+let part_two _ = failwith "part two unimplemented"
 
 let () =
   let part = Aoc.Util.parse_args () in
