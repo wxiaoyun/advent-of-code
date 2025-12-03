@@ -1,5 +1,7 @@
 #![feature(btree_cursors)]
 #![allow(unused)]
+// Disable clippy warnings that got added after the code was written
+#![allow(clippy::all)]
 
 mod day01;
 mod day02;
