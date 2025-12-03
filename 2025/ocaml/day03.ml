@@ -31,25 +31,19 @@ let part_two input =
           else digit :: include_digit rest msd
     in
 
-    let build =
-      List.fold_left
-        (fun acc digit ->
-          if acc < 0 || digit < 0 then -1 else (acc * 10) + digit)
-        0
-    in
+    let build = List.fold_left (fun acc digit -> (acc * 10) + digit) 0 in
 
     digits |> String.to_seq
     |> Seq.map (fun d -> int_of_char d - int_of_char '0')
     |> List.of_seq |> List.rev
     |> List.fold_left
          (fun (largest_num, builder, builder_len) digit ->
-           if builder_len < n then
-             (largest_num, digit :: builder, builder_len + 1)
-           else
-             let new_builder = include_digit builder digit in
-             let new_num = build new_builder in
-
-             (Int.max largest_num new_num, new_builder, builder_len))
+           let new_builder, new_len =
+             if builder_len < n then (digit :: builder, builder_len + 1)
+             else (include_digit builder digit, builder_len)
+           in
+           let new_num = build new_builder in
+           (Int.max largest_num new_num, new_builder, new_len))
          (-1, [], 0)
     |> fun (largest_num, _, _) -> largest_num
   in
