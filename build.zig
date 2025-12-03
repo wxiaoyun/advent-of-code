@@ -30,7 +30,7 @@ fn setup(
     year: u32,
     day: u8,
 ) void {
-    const name = b.fmt("aoc-{d}-{d}", .{ year, day });
+    const name = b.fmt("aoc-{d}-{d:0>2}", .{ year, day });
     const path = b.fmt("{d}/zig/day{d:0>2}.zig", .{ year, day });
 
     const exe = b.addExecutable(.{ .name = name, .root_module = b.createModule(.{ .root_source_file = b.path(path), .target = t, .optimize = o, .imports = imports }) });

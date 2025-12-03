@@ -18,4 +18,4 @@
  (synopsis "Advent of Code solutions")
  (description "Advent of Code solutions")
  (depends ocaml)
- (tags "advent-of-code" "aoc"))
+ (tags ("advent-of-code" "aoc")))

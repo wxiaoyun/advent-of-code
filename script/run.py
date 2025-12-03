@@ -7,6 +7,9 @@ from datetime import datetime
 
 
 def get_input_path(args: argparse.Namespace) -> str:
+    if args.input_file:
+        return args.input_file
+
     from scrape import INPUT_FOLDER_NAME
 
     return f"{args.year}/{INPUT_FOLDER_NAME}/{args.day}.txt"
@@ -25,7 +28,7 @@ def run_rust(args: argparse.Namespace) -> None:
 
 
 def run_zig(args: argparse.Namespace) -> None:
-    zig_args = ["zig", "build", f"aoc-{args.year}-{args.day}"]
+    zig_args = ["zig", "build", f"aoc-{args.year}-{args.day:0>2}"]
     if args.fast == True:
         zig_args.append("--release=fast")
 
@@ -35,18 +38,34 @@ def run_zig(args: argparse.Namespace) -> None:
     result = subprocess.run(zig_args, stdin=open(get_input_path(args), "r"))
     sys.exit(result.returncode)
 
+def run_ocaml(args: argparse.Namespace) -> None:
+    opam_args = ["opam", "exec"]
+    dune_args = ["--", "dune", "exec", f"{args.year}/ocaml/day{args.day:0>2}.exe"]
+    opam_args.extend(dune_args)
+
+    result = subprocess.run(opam_args, stdin=open(get_input_path(args), "r"))
+    sys.exit(result.returncode)
 
 runners = {
     "rust": run_rust,
     "zig": run_zig,
+    "ocaml": run_ocaml,
 }
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="AoC solution runner")
     parser.add_argument("language", choices=runners.keys())
     parser.add_argument("-y", "--year", default=datetime.now().year, type=int)
-    parser.add_argument("-d", "--day", default=datetime.now().day, type=int)
-    parser.add_argument("-p", "--part", default=1, type=int)
+    parser.add_argument(
+        "-d", "--day", choices=range(1, 26), default=datetime.now().day, type=int
+    )
+    parser.add_argument("-p", "--part", choices=[1, 2], default=1, type=int)
+    parser.add_argument(
+        "-I",
+        "--input-file",
+        help="Input file path. Defaults to <year>/input/<day>.txt",
+        type=str,
+    )
     parser.add_argument(
         "-f",
         "--fast",

@@ -1,0 +1,1 @@
+let () = Aoc.Util.test ()
