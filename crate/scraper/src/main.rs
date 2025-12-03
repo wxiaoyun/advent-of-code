@@ -41,8 +41,13 @@ async fn main() -> Result<()> {
     let output_dir = args.output_dir;
 
     if tokio::fs::try_exists(&output_dir).await.unwrap_or(false) {
+        println!("{:?} already exits", output_dir);
+    } else {
         tokio::fs::create_dir_all(&output_dir).await?;
+        println!("Created {:?}", output_dir);
     }
+
+    println!("Saving inputs to: {:?}", output_dir);
 
     REQWEST_CLIENT
         .get_or_init(|| async move {
@@ -71,7 +76,11 @@ async fn main() -> Result<()> {
         ));
     });
 
-    js.join_all().await;
+    js.join_all().await.into_iter().for_each(|res| {
+        if let Err(e) = res {
+            eprintln!("Error scraping {}", e);
+        };
+    });
     Ok(())
 }
 
