@@ -38,13 +38,25 @@ def run_zig(args: argparse.Namespace) -> None:
     result = subprocess.run(zig_args, stdin=open(get_input_path(args), "r"))
     sys.exit(result.returncode)
 
+
 def run_ocaml(args: argparse.Namespace) -> None:
     opam_args = ["opam", "exec"]
-    dune_args = ["--", "dune", "exec", f"{args.year}/ocaml/day{args.day:0>2}.exe"]
+    dune_args = [
+        "--",
+        "dune",
+        "exec",
+        f"{args.year}/ocaml/day{args.day:0>2}.exe",
+    ]
+    sub_cmd_args = [
+        "--",
+        str(args.part),
+    ]
     opam_args.extend(dune_args)
+    opam_args.extend(sub_cmd_args)
 
     result = subprocess.run(opam_args, stdin=open(get_input_path(args), "r"))
     sys.exit(result.returncode)
+
 
 runners = {
     "rust": run_rust,
