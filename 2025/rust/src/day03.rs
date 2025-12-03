@@ -1,4 +1,5 @@
 pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let mut buf = Vec::with_capacity(2);
     input
         .as_ref()
         .lines()
@@ -7,11 +8,12 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
                 .map(|c| c.to_digit(10).unwrap() as i8)
                 .collect::<Vec<_>>()
         })
-        .map(|digits| largest_n_digit_number(2, digits))
+        .map(|digits| largest_n_digit_number(2, digits, &mut buf))
         .sum()
 }
 
 pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let mut buf = Vec::with_capacity(12);
     input
         .as_ref()
         .lines()
@@ -20,11 +22,11 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
                 .map(|c| c.to_digit(10).unwrap() as i8)
                 .collect::<Vec<_>>()
         })
-        .map(|digits| largest_n_digit_number(12, digits))
+        .map(|digits| largest_n_digit_number(12, digits, &mut buf))
         .sum()
 }
 
-pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>) -> i64 {
+pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>, buf: &mut Vec<i8>) -> i64 {
     fn include_digit(builder: &mut [i8], digit: i8, i: usize) {
         if i >= builder.len() || digit < builder[i] {
             return;
@@ -45,7 +47,8 @@ pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>) -> i64 {
         acc
     }
 
-    let mut builder = vec![-1i8; n];
+    buf.resize(n, -1);
+    buf.fill(-1);
     digits
         .as_ref()
         .iter()
@@ -54,11 +57,11 @@ pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>) -> i64 {
         .enumerate()
         .fold(-1, |acc, (i, digit)| {
             if i < n {
-                builder[n - 1 - i] = digit;
+                buf[n - 1 - i] = digit;
             } else {
-                include_digit(&mut builder, digit, 0);
+                include_digit(buf, digit, 0);
             }
-            acc.max(build_digit(&builder))
+            acc.max(build_digit(buf))
         })
 }
 
@@ -75,11 +78,11 @@ mod test {
 
     #[test]
     fn test_part1() {
-        assert_eq!(16927, super::part_one(TEST_INPUT));
+        assert_eq!(357, super::part_one(TEST_INPUT));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(167384358365132, super::part_two(TEST_INPUT));
+        assert_eq!(3121910778619, super::part_two(TEST_INPUT));
     }
 }
