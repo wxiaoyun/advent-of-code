@@ -13,7 +13,7 @@ pub fn build(b: *std.Build) void {
         days: []const u8 = &.{},
     };
 
-    const solutions = [_]AocYear{.{ .year = 2025, .days = &.{ 1, 2, 3 } }};
+    const solutions = [_]AocYear{.{ .year = 2025, .days = &.{ 1, 2, 3, 4 } }};
 
     for (solutions) |aoc_year| {
         for (aoc_year.days) |day| {
