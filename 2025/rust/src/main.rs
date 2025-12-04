@@ -1,4 +1,5 @@
 #![feature(likely_unlikely)]
+#![allow(clippy::ptr_arg, clippy::needless_range_loop)]
 
 mod day01;
 mod day02;
