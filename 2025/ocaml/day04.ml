@@ -1,6 +1,6 @@
 let loop_3x3 fn init =
   let loop3 = List.init 3 Fun.id in
-  let accumulator i acc j = fn acc j i in
+  let accumulator i acc j = fn acc i j in
   loop3
   |> List.fold_left
        (fun accum i -> List.fold_left (accumulator i) accum loop3)
