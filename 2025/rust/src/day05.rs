@@ -69,8 +69,24 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
     fresh_cnt
 }
 
-pub fn part_two(_: impl AsRef<str>) -> i64 {
-    0
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let (mut ranges, _) = parse_input(input);
+    ranges.sort();
+
+    let mut merged_ranges = Vec::with_capacity(ranges.len());
+    ranges.push((i64::MAX, i64::MAX));
+    let (mut prev_s, mut prev_e) = ranges[0];
+    for (s, e) in ranges.into_iter().skip(1) {
+        if prev_e < s {
+            merged_ranges.push((prev_s, prev_e));
+            (prev_s, prev_e) = (s, e);
+            continue;
+        }
+
+        prev_e = prev_e.max(e);
+    }
+
+    merged_ranges.into_iter().map(|(l, r)| r - l + 1).sum()
 }
 
 #[cfg(test)]
