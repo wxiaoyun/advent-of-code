@@ -12,10 +12,10 @@ use tokio::sync::OnceCell;
 #[derive(Parser, Debug)]
 #[command(version)]
 struct Args {
-    #[arg(short, long)]
-    pub year: u32,
-    #[arg(short, long, help = "The day/s to scrape.")]
-    pub days: IntRangeOption,
+    #[arg(short, long, help = "The year/s to scrape")]
+    pub year: IntRangeOption,
+    #[arg(short, long, help = "The day/s to scrape")]
+    pub day: IntRangeOption,
     #[arg(short, long, help = "Advent of Code session token")]
     pub session_token: String,
     #[arg(short, long, default_value = "3")]
@@ -112,18 +112,25 @@ async fn main() -> Result<()> {
         })
         .await;
 
-    println!("Scraping inputs for {:?}", args.days.clone());
-    let days: Vec<_> = args.days.into();
+    println!(
+        "Scraping inputs for year: {:?} and day: {:?}",
+        args.year.clone(),
+        args.day.clone()
+    );
+    let years: Vec<_> = args.year.into();
+    let days: Vec<_> = args.day.into();
 
     let mut js = tokio::task::JoinSet::new();
-    days.into_iter().for_each(|day| {
-        js.spawn(scrape_day(
-            args.year,
-            day,
-            max_retries,
-            delay,
-            output_dir.clone(),
-        ));
+    years.iter().copied().for_each(|year| {
+        days.iter().copied().for_each(|day| {
+            js.spawn(scrape_day(
+                year,
+                day,
+                max_retries,
+                delay,
+                output_dir.clone(),
+            ));
+        });
     });
 
     js.join_all().await.into_iter().for_each(|res| {
@@ -135,7 +142,7 @@ async fn main() -> Result<()> {
 }
 
 async fn scrape_day(
-    year: u32,
+    year: i64,
     day: i64,
     max_retries: u8,
     delay: u8,
@@ -174,7 +181,7 @@ async fn scrape_day(
         tokio::time::sleep(Duration::from_secs(delay as u64)).await;
     };
 
-    let path = output_dir.join(format!("{:0>2}.txt", day));
+    let path = output_dir.join(format!("{}_{:0>2}.txt", year, day));
     tokio::fs::write(path, body.as_bytes()).await?;
 
     println!("Saved input for Advent of Code {year}/{day:0>2}");

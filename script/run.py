@@ -17,7 +17,7 @@ def pipe_input(args: argparse.Namespace) -> IO:
     import scrape
 
     try:
-        scraped_file_path = scrape.input_folder_of_day(args.year, args.day)
+        scraped_file_path = scrape.input_path_of(args.year, args.day)
         return open(scraped_file_path, "r")
     except:
         print(

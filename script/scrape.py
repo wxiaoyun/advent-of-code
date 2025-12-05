@@ -9,17 +9,13 @@ from datetime import datetime
 INPUT_FOLDER_NAME = "input"
 
 
-def input_folder_of_year(year: int) -> str:
-    return f"{INPUT_FOLDER_NAME}/{year}"
-
-
-def input_folder_of_day(year: int, day: int) -> str:
-    return f"{INPUT_FOLDER_NAME}/{year}/{day:0>2}.txt"
+def input_path_of(year: int, day: int) -> str:
+    return f"{INPUT_FOLDER_NAME}/{year}_{day:0>2}.txt"
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="AoC question scraper")
-    parser.add_argument("-y", "--year", default=datetime.now().year, type=int)
+    parser.add_argument("-y", "--year", default=str(datetime.now().year), type=str)
     parser.add_argument("-d", "--days", default=str(datetime.now().day), type=str)
     parser.add_argument(
         "-s",
@@ -36,14 +32,14 @@ if __name__ == "__main__":
         "--",
         "--year",
         str(args.year),
-        "--days",
+        "--day",
         str(args.days),
         "--max-retries",
         str(args.max_retries),
         "--delay",
         str(args.delay),
         "--output-dir",
-        input_folder_of_year(args.year),
+        INPUT_FOLDER_NAME,
     ]
 
     if not args.session_token:
