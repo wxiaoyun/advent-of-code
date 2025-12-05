@@ -5,14 +5,22 @@ import os
 import subprocess
 import argparse
 from datetime import datetime
-import dotenv
 
 INPUT_FOLDER_NAME = "input"
+
+
+def input_folder_of_year(year: int) -> str:
+    return f"{INPUT_FOLDER_NAME}/{year}"
+
+
+def input_folder_of_day(year: int, day: int) -> str:
+    return f"{INPUT_FOLDER_NAME}/{year}/{day:0>2}.txt"
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="AoC question scraper")
     parser.add_argument("-y", "--year", default=datetime.now().year, type=int)
-    parser.add_argument("-d", "--day", type=int)
+    parser.add_argument("-d", "--days", default=str(datetime.now().day), type=str)
     parser.add_argument(
         "-s",
         "--session-token",
@@ -28,15 +36,19 @@ if __name__ == "__main__":
         "--",
         "--year",
         str(args.year),
+        "--days",
+        str(args.days),
         "--max-retries",
         str(args.max_retries),
         "--delay",
         str(args.delay),
         "--output-dir",
-        f"{args.year}/{INPUT_FOLDER_NAME}",
+        input_folder_of_year(args.year),
     ]
 
     if not args.session_token:
+        import dotenv
+
         dotenv.load_dotenv()
         args.session_token = os.getenv("ADVENT_OF_CODE_SESSION")
         if not args.session_token:
@@ -44,9 +56,6 @@ if __name__ == "__main__":
             sys.exit(1)
         else:
             scraper_args.extend(["--session-token", args.session_token])
-
-    if args.day:
-        scraper_args.extend(["--day", str(args.day)])
 
     cargo_args.extend(scraper_args)
     result = subprocess.run(cargo_args)

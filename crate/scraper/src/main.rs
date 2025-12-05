@@ -1,6 +1,6 @@
-use std::{path::PathBuf, time::Duration};
+use std::{path::PathBuf, str::FromStr, time::Duration};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::Parser;
 use futures::TryFutureExt;
 use reqwest::{
@@ -11,15 +11,11 @@ use tokio::sync::OnceCell;
 
 #[derive(Parser, Debug)]
 #[command(version)]
-pub struct Args {
+struct Args {
     #[arg(short, long)]
     pub year: u32,
-    #[arg(
-        short,
-        long,
-        help = "The day to scrape. If not provided, all days will be scraped."
-    )]
-    pub day: Option<u8>,
+    #[arg(short, long, help = "The day/s to scrape.")]
+    pub days: IntRangeOption,
     #[arg(short, long, help = "Advent of Code session token")]
     pub session_token: String,
     #[arg(short, long, default_value = "3")]
@@ -28,6 +24,62 @@ pub struct Args {
     pub delay: u8,
     #[arg(short, long, help = "The directory to save the scraped data.")]
     pub output_dir: PathBuf,
+}
+
+#[derive(Clone, Debug)]
+enum IntRangeOption {
+    Single(i64),
+    Range(i64, i64),
+    Selection(Vec<i64>),
+}
+
+const RANGE_FORMAT: &str = "Expected range format of \\d+-\\d+";
+const SELECTION_FORMAT: &str = "Expected selection format of \\d+,\\d(,\\d+)*";
+
+impl From<IntRangeOption> for Vec<i64> {
+    fn from(value: IntRangeOption) -> Self {
+        match value {
+            IntRangeOption::Single(i) => vec![i],
+            IntRangeOption::Range(start, end) => (start..=end).collect(),
+            IntRangeOption::Selection(v) => v,
+        }
+    }
+}
+
+impl FromStr for IntRangeOption {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        if s.contains('-') {
+            let mut ranges = s.split('-');
+            let left_num = ranges
+                .next()
+                .context(RANGE_FORMAT)?
+                .parse::<i64>()
+                .context(RANGE_FORMAT)?;
+
+            let right_num = ranges
+                .next()
+                .context(RANGE_FORMAT)?
+                .parse::<i64>()
+                .context(RANGE_FORMAT)?;
+
+            return Ok(Self::Range(left_num, right_num));
+        }
+
+        if s.contains(',') {
+            let nums = s
+                .split(',')
+                .map(|s| s.parse::<i64>())
+                .collect::<Result<_, _>>()
+                .context(SELECTION_FORMAT)?;
+
+            return Ok(Self::Selection(nums));
+        }
+
+        let num = s.parse::<i64>().context("Expected i64")?;
+        Ok(Self::Single(num))
+    }
 }
 
 static REQWEST_CLIENT: OnceCell<Client> = OnceCell::const_new();
@@ -60,10 +112,8 @@ async fn main() -> Result<()> {
         })
         .await;
 
-    let days = args
-        .day
-        .map(|day| vec![day])
-        .unwrap_or_else(|| (1..=25).collect());
+    println!("Scraping inputs for {:?}", args.days.clone());
+    let days: Vec<_> = args.days.into();
 
     let mut js = tokio::task::JoinSet::new();
     days.into_iter().for_each(|day| {
@@ -86,7 +136,7 @@ async fn main() -> Result<()> {
 
 async fn scrape_day(
     year: u32,
-    day: u8,
+    day: i64,
     max_retries: u8,
     delay: u8,
     output_dir: PathBuf,
@@ -124,10 +174,10 @@ async fn scrape_day(
         tokio::time::sleep(Duration::from_secs(delay as u64)).await;
     };
 
-    let path = output_dir.join(format!("{}.txt", day));
+    let path = output_dir.join(format!("{:0>2}.txt", day));
     tokio::fs::write(path, body.as_bytes()).await?;
 
-    println!("Saved input for Advent of Code {year}/{day:02}");
+    println!("Saved input for Advent of Code {year}/{day:0>2}");
 
     Ok(())
 }

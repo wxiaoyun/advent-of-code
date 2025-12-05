@@ -4,15 +4,27 @@ import sys
 import subprocess
 import argparse
 from datetime import datetime
+from typing import IO
 
 
-def get_input_path(args: argparse.Namespace) -> str:
+def pipe_input(args: argparse.Namespace) -> IO:
+    if not sys.stdin.isatty():
+        return sys.stdin
+
     if args.input_file:
-        return args.input_file
+        return open(args.input_file, "r")
 
-    from scrape import INPUT_FOLDER_NAME
+    import scrape
 
-    return f"{args.year}/{INPUT_FOLDER_NAME}/{args.day}.txt"
+    try:
+        scraped_file_path = scrape.input_folder_of_day(args.year, args.day)
+        return open(scraped_file_path, "r")
+    except:
+        print(
+            f"Error opening scraped input file at {scraped_file_path}, please run the scraper first.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 def run_rust(args: argparse.Namespace) -> None:
@@ -23,7 +35,7 @@ def run_rust(args: argparse.Namespace) -> None:
     sub_cmd_args = ["--", str(args.day), str(args.part)]
     cargo_args.extend(sub_cmd_args)
 
-    result = subprocess.run(cargo_args, stdin=open(get_input_path(args), "r"))
+    result = subprocess.run(cargo_args, stdin=pipe_input(args))
     sys.exit(result.returncode)
 
 
@@ -35,7 +47,7 @@ def run_zig(args: argparse.Namespace) -> None:
     sub_cmd_args = ["--", str(args.part)]
     zig_args.extend(sub_cmd_args)
 
-    result = subprocess.run(zig_args, stdin=open(get_input_path(args), "r"))
+    result = subprocess.run(zig_args, stdin=pipe_input(args))
     sys.exit(result.returncode)
 
 
@@ -54,7 +66,7 @@ def run_ocaml(args: argparse.Namespace) -> None:
     opam_args.extend(dune_args)
     opam_args.extend(sub_cmd_args)
 
-    result = subprocess.run(opam_args, stdin=open(get_input_path(args), "r"))
+    result = subprocess.run(opam_args, stdin=pipe_input(args))
     sys.exit(result.returncode)
 
 
