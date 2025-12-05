@@ -1,6 +1,6 @@
 use std::{path::PathBuf, str::FromStr, time::Duration};
 
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, anyhow};
 use clap::Parser;
 use futures::TryFutureExt;
 use reqwest::{
@@ -164,11 +164,11 @@ async fn scrape_day(
         };
 
         if e.status().is_some_and(|status| status == 404) {
-            return Err(anyhow::Error::msg("No question found for day {day}"));
+            return Err(anyhow!("No question found for day {day}"));
         };
 
         if retries >= max_retries {
-            return Err(anyhow::Error::from(e));
+            return Err(anyhow!(e));
         }
         retries += 1;
         tokio::time::sleep(Duration::from_secs(delay as u64)).await;
