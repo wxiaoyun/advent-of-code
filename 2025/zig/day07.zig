@@ -75,10 +75,10 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
 }
 
 fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
-    const Set = std.AutoArrayHashMap(usize, i64);
-    var beams = Set.init(alloc);
+    const Map = std.AutoArrayHashMap(usize, i64);
+    var beams = Map.init(alloc);
     defer beams.deinit();
-    var tmp = Set.init(alloc);
+    var tmp = Map.init(alloc);
     defer tmp.deinit();
 
     var first_row: bool = true;
@@ -124,7 +124,7 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
             }
         }
 
-        std.mem.swap(Set, &beams, &tmp);
+        std.mem.swap(Map, &beams, &tmp);
     }
 
     var total: i64 = 0;
