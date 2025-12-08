@@ -1,5 +1,7 @@
 const std = @import("std");
 
+pub const UnionFind = @import("union_find.zig");
+
 const Args = struct {
     part: u8 = 1,
 };
