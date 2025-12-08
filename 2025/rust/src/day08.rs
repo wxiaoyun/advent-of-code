@@ -17,6 +17,7 @@ fn parse_input(input: impl AsRef<str>) -> Vec<Vec<i64>> {
 struct UnionFind {
     parent: Vec<usize>,
     rank: Vec<usize>,
+    components: usize,
 }
 
 impl UnionFind {
@@ -26,6 +27,7 @@ impl UnionFind {
         Self {
             parent: (0..size).collect(),
             rank,
+            components: 20,
         }
     }
 
@@ -54,10 +56,15 @@ impl UnionFind {
             self.parent[ap] = bp;
             self.rank[bp] += apr;
         }
+        self.components -= 1;
+    }
+
+    fn is_connected(&self) -> bool {
+        self.components == 1
     }
 }
 
-const STEPS: usize = 10;
+static mut CONNECTIONS: usize = 1000;
 
 pub fn part_one(input: impl AsRef<str>) -> i64 {
     let coords = parse_input(input);
@@ -75,7 +82,7 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
     let mut uf = UnionFind::new(coords.len());
     let mut connection_count = 0;
     while let Some((_, i, j)) = heap.pop() {
-        if connection_count >= STEPS {
+        if connection_count >= unsafe { CONNECTIONS } {
             break;
         }
         connection_count += 1;
@@ -107,13 +114,40 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
         .fold(1, |acc, size| acc * (-size))
 }
 
-pub fn part_two(_: impl AsRef<str>) -> i64 {
-    0
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let coords = parse_input(input);
+
+    let mut heap = BinaryHeap::with_capacity(coords.len() * (coords.len() - 1) / 2);
+    for i in 0..coords.len() {
+        let (ix, iy, iz) = (coords[i][0], coords[i][1], coords[i][2]);
+        for j in (i + 1)..coords.len() {
+            let (jx, jy, jz) = (coords[j][0], coords[j][1], coords[j][2]);
+            let dist_sq = (ix - jx).pow(2) + (iy - jy).pow(2) + (iz - jz).pow(2);
+            heap.push((-dist_sq, i, j));
+        }
+    }
+
+    let mut uf = UnionFind::new(coords.len());
+    while let Some((_, i, j)) = heap.pop() {
+        if uf.find(i) == uf.find(j) {
+            continue;
+        }
+
+        uf.union(i, j);
+
+        if uf.is_connected() {
+            return coords[i][0] * coords[j][0];
+        }
+    }
+
+    unreachable!()
 }
 
 #[cfg(test)]
 mod test {
     use indoc::indoc;
+
+    use crate::day08::CONNECTIONS;
 
     const TEST_INPUT: &str = indoc! {"
         162,817,812
@@ -140,11 +174,12 @@ mod test {
 
     #[test]
     fn test_part1() {
+        unsafe { CONNECTIONS = 10 };
         assert_eq!(40, super::part_one(TEST_INPUT));
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(0, super::part_two(TEST_INPUT));
+        assert_eq!(25272, super::part_two(TEST_INPUT));
     }
 }
