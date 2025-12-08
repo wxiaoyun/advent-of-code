@@ -27,7 +27,7 @@ impl UnionFind {
         Self {
             parent: (0..size).collect(),
             rank,
-            components: 20,
+            components: size,
         }
     }
 
