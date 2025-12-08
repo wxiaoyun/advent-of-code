@@ -54,3 +54,7 @@ pub fn @"union"(self: *Self, a: usize, b: usize) void {
     }
     self.components -= 1;
 }
+
+pub fn isConnected(self: *const Self) bool {
+    return self.components == 1;
+}

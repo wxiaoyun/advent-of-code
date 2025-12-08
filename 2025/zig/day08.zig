@@ -71,7 +71,6 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
         var coord: [3]i64 = undefined;
         inline for (0..3) |i| {
             const coord_str = coord_iter.next().?;
-            std.debug.print("{s}\n", .{coord_str});
             const coord_num = try std.fmt.parseInt(i64, coord_str, 10);
             coord[i] = coord_num;
         }
@@ -101,7 +100,9 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
     defer uf.deinit(alloc);
     for (0..CONNECTIONS) |_| {
         const tuple = heap.removeOrNull() orelse break;
-        uf.@"union"(tuple[1], tuple[2]);
+        const i = tuple[1];
+        const j = tuple[2];
+        uf.@"union"(i, j);
     }
 
     var map = std.AutoArrayHashMap(usize, usize).init(alloc);
@@ -131,8 +132,71 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
     return result;
 }
 
-fn part2(_: std.mem.Allocator, _: []u8) !i64 {
-    return 0;
+fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
+    var row_iter = std.mem.splitScalar(u8, input, '\n');
+    var ncoords: usize = 0;
+    while (row_iter.next()) |row| {
+        if (row.len == 0) {
+            @branchHint(.cold);
+            break;
+        }
+        ncoords += 1;
+    }
+
+    var coords = std.ArrayList([3]i64).empty;
+    try coords.ensureTotalCapacity(alloc, ncoords);
+    defer coords.deinit(alloc);
+
+    row_iter.reset();
+    while (row_iter.next()) |row| {
+        if (row.len == 0) {
+            @branchHint(.cold);
+            break;
+        }
+
+        var coord_iter = std.mem.splitScalar(u8, row, ',');
+        var coord: [3]i64 = undefined;
+        inline for (0..3) |i| {
+            const coord_str = coord_iter.next().?;
+            const coord_num = try std.fmt.parseInt(i64, coord_str, 10);
+            coord[i] = coord_num;
+        }
+        coords.appendAssumeCapacity(coord);
+    }
+
+    var heap = MinTupleHeap.init(alloc, {});
+    defer heap.deinit();
+    try heap.ensureTotalCapacity(ncoords);
+
+    for (0..ncoords) |i| {
+        const ix = coords.items[i][0];
+        const iy = coords.items[i][1];
+        const iz = coords.items[i][2];
+        for (i + 1..ncoords) |j| {
+            const jx = coords.items[j][0];
+            const jy = coords.items[j][1];
+            const jz = coords.items[j][2];
+
+            const dist_sq = std.math.pow(i64, ix - jx, 2) + std.math.pow(i64, iy - jy, 2) + std.math.pow(i64, iz - jz, 2);
+
+            try heap.add(.{ @intCast(dist_sq), i, j });
+        }
+    }
+
+    var uf = try util.UnionFind.init(alloc, ncoords);
+    defer uf.deinit(alloc);
+    while (true) {
+        const tuple = heap.removeOrNull() orelse break;
+        const i = tuple[1];
+        const j = tuple[2];
+        uf.@"union"(i, j);
+
+        if (uf.isConnected()) {
+            return coords.items[i][0] * coords.items[j][0];
+        }
+    }
+
+    unreachable;
 }
 
 const test_input =
