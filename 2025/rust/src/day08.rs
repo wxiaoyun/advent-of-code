@@ -1,5 +1,7 @@
 use std::collections::{BinaryHeap, HashMap};
 
+use util::union_find::UnionFind;
+
 fn parse_input(input: impl AsRef<str>) -> Vec<Vec<i64>> {
     input
         .as_ref()
@@ -12,56 +14,6 @@ fn parse_input(input: impl AsRef<str>) -> Vec<Vec<i64>> {
         })
         .collect::<Result<_, _>>()
         .unwrap()
-}
-
-struct UnionFind {
-    parent: Vec<usize>,
-    rank: Vec<usize>,
-    components: usize,
-}
-
-impl UnionFind {
-    fn new(size: usize) -> Self {
-        let mut rank = Vec::new();
-        rank.resize(size, 1);
-        Self {
-            parent: (0..size).collect(),
-            rank,
-            components: size,
-        }
-    }
-
-    fn find(&mut self, a: usize) -> usize {
-        let ap = self.parent[a];
-        if a == ap {
-            return a;
-        }
-
-        let app = self.find(ap);
-        self.parent[a] = app;
-        app
-    }
-
-    fn union(&mut self, a: usize, b: usize) {
-        let (ap, bp) = (self.find(a), self.find(b));
-        if ap == bp {
-            return;
-        }
-
-        let (apr, bpr) = (self.rank[ap], self.rank[bp]);
-        if apr > bpr {
-            self.parent[bp] = ap;
-            self.rank[ap] += bpr;
-        } else {
-            self.parent[ap] = bp;
-            self.rank[bp] += apr;
-        }
-        self.components -= 1;
-    }
-
-    fn is_connected(&self) -> bool {
-        self.components == 1
-    }
 }
 
 static mut CONNECTIONS: usize = 1000;

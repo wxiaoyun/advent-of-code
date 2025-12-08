@@ -1,5 +1,7 @@
 use std::io::Read;
 
+pub mod union_find;
+
 pub struct Args {
     pub day: u8,
     pub part: u8,
