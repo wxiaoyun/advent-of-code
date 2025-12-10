@@ -1,5 +1,6 @@
-use std::vec;
+use std::{collections::HashMap, vec};
 
+use rayon::prelude::*;
 use regex::Regex;
 
 fn parse_input(input: impl AsRef<str>) -> (Vec<bool>, Vec<Vec<usize>>, Vec<usize>) {
@@ -93,8 +94,62 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
         .sum()
 }
 
-pub fn part_two(_: impl AsRef<str>) -> i64 {
-    0
+fn solve_two(
+    dp: &mut HashMap<Vec<usize>, i64>,
+    toggle_groups: &Vec<Vec<usize>>,
+    target: &Vec<usize>,
+    cur: Vec<usize>,
+) -> i64 {
+    if let Some(result) = dp.get(&cur).copied() {
+        return result;
+    }
+
+    let is_same = target
+        .iter()
+        .copied()
+        .zip(cur.iter().copied())
+        .all(|(a, b)| a == b);
+    if is_same {
+        return 0;
+    }
+
+    let mut best = i64::MAX >> 1;
+
+    'outer: for tg in toggle_groups.iter() {
+        let mut new_state = cur.clone();
+        for j in tg.iter().copied() {
+            new_state[j] += 1;
+            if new_state[j] > target[j] {
+                continue 'outer;
+            }
+        }
+
+        best = best.min(1 + solve_two(dp, toggle_groups, target, new_state));
+    }
+
+    dp.insert(cur, best);
+    best
+}
+
+pub fn part_two(input: impl AsRef<str>) -> i64 {
+    input
+        .as_ref()
+        .lines()
+        .collect::<Vec<_>>()
+        .par_iter()
+        .map(|input| {
+            let (_, toggle_groups, target_jolt) = parse_input(input);
+            let mut dp = HashMap::new();
+            let res = solve_two(
+                &mut dp,
+                &toggle_groups,
+                &target_jolt,
+                vec![0; target_jolt.len()],
+            );
+            println!("{:?}: {}", target_jolt, res);
+            res
+        })
+        .sum()
 }
 
 #[cfg(test)]
@@ -114,6 +169,6 @@ mod test {
 
     #[test]
     fn test_part2() {
-        assert_eq!(24, super::part_two(TEST_INPUT));
+        assert_eq!(33, super::part_two(TEST_INPUT));
     }
 }
