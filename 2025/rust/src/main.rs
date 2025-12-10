@@ -10,6 +10,7 @@ mod day06;
 mod day07;
 mod day08;
 mod day09;
+mod day10;
 
 fn main() {
     let args = util::parse_args();
@@ -34,6 +35,8 @@ fn main() {
         (8, 2) => day08::part_two(input),
         (9, 1) => day09::part_one(input),
         (9, 2) => day09::part_two(input),
+        (10, 1) => day10::part_one(input),
+        (10, 2) => day10::part_two(input),
         _ => panic!("Day {}, part {} not implemented", args.day, args.part),
     };
 

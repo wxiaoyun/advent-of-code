@@ -7,3 +7,4 @@ edition = { workspace = true }
 util = { path = "../../crate/util" }
 indoc.workspace = true
 extfn.workspace = true
+regex.workspace = true
