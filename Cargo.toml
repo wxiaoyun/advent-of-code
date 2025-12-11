@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["2023/rust", "2024/rust", "2025/rust", "crate/scraper", "crate/util"]
+members = ["2023/rust", "2024/rust", "2025/rust", "crate/scraper", "crate/util", "crate/util-macro"]
 
 [workspace.package]
 version = "0.1.0"

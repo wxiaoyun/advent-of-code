@@ -1,5 +1,5 @@
 [package]
-name = "util"
+name = "util-macro"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,4 +7,9 @@ license.workspace = true
 keywords.workspace = true
 
 [dependencies]
-util-macro = { path = "../util-macro" }
+syn = "2"
+quote = "1"
+proc-macro2 = "1"
+
+[lib]
+proc-macro = true

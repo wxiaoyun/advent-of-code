@@ -1,5 +1,7 @@
 use std::io::Read;
 
+pub use util_macro::*;
+
 pub mod union_find;
 
 pub struct Args {
