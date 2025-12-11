@@ -61,3 +61,7 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
 
     longest
 }
+
+pub fn part_two(_: impl AsRef<str>) -> i64 {
+    0
+}

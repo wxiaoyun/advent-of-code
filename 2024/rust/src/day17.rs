@@ -135,3 +135,7 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
 
     res
 }
+
+pub fn part_two(_input: impl AsRef<str>) -> i64 {
+    0
+}
