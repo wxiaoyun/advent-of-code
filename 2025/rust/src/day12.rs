@@ -154,13 +154,56 @@ fn try_solve(
     false
 }
 
+enum Outcome {
+    DefinitelyPossible,
+    DefinitelyImpossible,
+    Undetermined,
+}
+
+// Hint from reddit user u/fireymike
+// Basically all input cases naively fall into definitely possible and definitely impossible cases
+// Although in general, tiling problems cannot be solved naively this way.
+fn naive_check(
+    shape: &Vec<Vec<Vec<bool>>>,
+    expected_shapes: &[usize],
+    nrow: usize,
+    ncol: usize,
+) -> Outcome {
+    let maximum_rows = nrow / 3;
+    let maximum_cols = ncol / 3;
+    let total_shapes: usize = expected_shapes.iter().copied().sum();
+
+    if total_shapes <= maximum_rows * maximum_cols {
+        return Outcome::DefinitelyPossible;
+    }
+
+    let mut minimum_cells = 0;
+    for (idx, cnt) in expected_shapes.iter().copied().enumerate() {
+        let n_occupied: usize = shape[idx]
+            .iter()
+            .map(|r| {
+                r.iter()
+                    .copied()
+                    .fold(1, |acc, b| acc + if b { 1 } else { 0 })
+            })
+            .sum();
+        minimum_cells += n_occupied * cnt;
+    }
+
+    if minimum_cells > nrow * ncol {
+        return Outcome::DefinitelyImpossible;
+    }
+
+    Outcome::Undetermined
+}
+
 pub fn part_one(input: impl AsRef<str>) -> i64 {
     let (shapes, regions) = parse_input(input);
     let shape_rotations: HashMap<_, _> = shapes
-        .into_iter()
+        .iter()
         .enumerate()
         .flat_map(|(i, shape)| {
-            let mut shape_rotations = vec![((i, 0usize), shape)];
+            let mut shape_rotations = vec![((i, 0usize), shape.clone())];
             shape_rotations.reserve(3);
 
             for _ in 1..4 {
@@ -176,6 +219,12 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
     regions
         .into_par_iter()
         .map(|(nrow, ncol, mut expected_shapes)| {
+            match naive_check(&shapes, &expected_shapes, nrow, ncol) {
+                Outcome::DefinitelyPossible => return 1,
+                Outcome::DefinitelyImpossible => return 0,
+                _ => (),
+            };
+
             let mut mat = vec![vec![false; ncol]; nrow];
             if try_solve(&mut mat, &shape_rotations, &mut expected_shapes, 0) {
                 1
