@@ -1,0 +1,242 @@
+use std::collections::HashMap;
+
+use rayon::prelude::*;
+use regex::Regex;
+
+fn parse_input(input: impl AsRef<str>) -> (Vec<Vec<Vec<bool>>>, Vec<(usize, usize, Vec<usize>)>) {
+    let shape_reg = Regex::new(r"\d+:\n((?:[#\.]+\n)+)").unwrap();
+    let region_reg = Regex::new(r"(\d+)x(\d+):\s([\s\d]+\n)").unwrap();
+
+    let shapes = shape_reg
+        .captures_iter(input.as_ref())
+        .map(|r| {
+            r.get(1)
+                .map(|s| {
+                    s.as_str()
+                        .lines()
+                        .map(|l| l.chars().map(|c| c == '#').collect())
+                })
+                .unwrap()
+                .collect()
+        })
+        .collect();
+
+    let regions = region_reg
+        .captures_iter(input.as_ref())
+        .map(|cap| {
+            let ncol = cap
+                .get(1)
+                .and_then(|m| m.as_str().parse::<usize>().ok())
+                .unwrap();
+            let nrow = cap
+                .get(2)
+                .and_then(|m| m.as_str().parse::<usize>().ok())
+                .unwrap();
+            let shape_cnt = cap
+                .get(3)
+                .and_then(|m| {
+                    m.as_str()
+                        .split_ascii_whitespace()
+                        .map(|s| s.parse::<usize>().ok())
+                        .collect::<Option<_>>()
+                })
+                .unwrap();
+
+            (ncol, nrow, shape_cnt)
+        })
+        .collect();
+
+    (shapes, regions)
+}
+
+fn rotate_once<T>(shape: &Vec<Vec<T>>) -> Vec<Vec<T>>
+where
+    T: Default + Clone,
+{
+    let nrow = shape.len();
+    let ncol = shape[0].len();
+
+    let mut tmp = vec![vec![T::default(); nrow]; ncol];
+
+    for i in 0..nrow {
+        let tmp_col = nrow - 1 - i;
+        for j in 0..ncol {
+            let tmp_row = j;
+            tmp[tmp_row][tmp_col] = shape[i][j].clone();
+        }
+    }
+
+    tmp
+}
+
+fn try_fit(
+    mat: &mut Vec<Vec<bool>>,
+    shape: &Vec<Vec<bool>>,
+    start_r: usize,
+    start_c: usize,
+    set_to: bool,
+) -> bool {
+    let mat_nrow = mat.len();
+    let mat_ncol = mat[0].len();
+    let shape_nrow = shape.len();
+    let shape_ncol = shape[0].len();
+
+    if start_r + shape_nrow > mat_nrow || start_c + shape_ncol > mat_ncol {
+        return false;
+    }
+
+    let mut undo_log = vec![];
+    let mut conflict = false;
+
+    'outer: for r in 0..shape_nrow {
+        let dest_r = start_r + r;
+        for c in 0..shape_ncol {
+            let dest_c = start_c + c;
+
+            if !shape[r][c] {
+                continue;
+            }
+
+            // shape[r][c] == true
+            if mat[dest_r][dest_c] == set_to {
+                conflict = true;
+                break 'outer;
+            }
+
+            mat[dest_r][dest_c] = set_to;
+            undo_log.push((dest_r, dest_c));
+        }
+    }
+
+    if conflict {
+        undo_log.into_iter().for_each(|(r, c)| {
+            mat[r][c] = !set_to;
+        });
+    }
+
+    !conflict
+}
+
+fn try_solve(
+    mat: &mut Vec<Vec<bool>>,
+    shape_rotations: &HashMap<(usize, usize), Vec<Vec<bool>>>,
+    expected_shapes: &mut [usize],
+    shape_idx: usize,
+) -> bool {
+    if shape_idx >= expected_shapes.len() {
+        return true;
+    }
+
+    if expected_shapes[shape_idx] == 0 {
+        return try_solve(mat, shape_rotations, expected_shapes, shape_idx + 1);
+    }
+
+    let nrow = mat.len();
+    let ncol = mat[0].len();
+
+    for r in 0..nrow {
+        for c in 0..ncol {
+            for rotation in 0..4 {
+                let shape = shape_rotations.get(&(shape_idx, rotation)).unwrap();
+                if !try_fit(mat, shape, r, c, true) {
+                    continue;
+                }
+                expected_shapes[shape_idx] -= 1;
+                if try_solve(mat, shape_rotations, expected_shapes, shape_idx) {
+                    return true;
+                }
+                expected_shapes[shape_idx] += 1;
+                try_fit(mat, shape, r, c, false);
+            }
+        }
+    }
+
+    false
+}
+
+pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let (shapes, regions) = parse_input(input);
+    let shape_rotations: HashMap<_, _> = shapes
+        .into_iter()
+        .enumerate()
+        .flat_map(|(i, shape)| {
+            let mut shape_rotations = vec![((i, 0usize), shape)];
+            shape_rotations.reserve(3);
+
+            for _ in 1..4 {
+                let ((_, rot), shape) = shape_rotations.last().unwrap();
+                let shape_rotated = rotate_once(shape);
+                shape_rotations.push(((i, rot + 1), shape_rotated));
+            }
+
+            shape_rotations
+        })
+        .collect();
+
+    regions
+        .into_par_iter()
+        .map(|(nrow, ncol, mut expected_shapes)| {
+            let mut mat = vec![vec![false; ncol]; nrow];
+            if try_solve(&mut mat, &shape_rotations, &mut expected_shapes, 0) {
+                1
+            } else {
+                0
+            }
+        })
+        .sum()
+}
+
+pub fn part_two(_: impl AsRef<str>) -> i64 {
+    0
+}
+
+#[cfg(test)]
+mod test {
+    use indoc::indoc;
+
+    const TEST_INPUT: &str = indoc! {"
+        0:
+        ###
+        ##.
+        ##.
+
+        1:
+        ###
+        ##.
+        .##
+
+        2:
+        .##
+        ###
+        ##.
+
+        3:
+        ##.
+        ###
+        ##.
+
+        4:
+        ###
+        #..
+        ###
+
+        5:
+        ###
+        .#.
+        ###
+
+        4x4: 0 0 0 0 2 0
+        12x5: 1 0 1 0 2 2
+        12x5: 1 0 1 0 3 2
+    "};
+
+    #[test]
+    fn test_part1() {
+        assert_eq!(2, super::part_one(TEST_INPUT));
+    }
+
+    #[test]
+    fn test_part2() {
+        assert_eq!(2, super::part_two(TEST_INPUT));
+    }
+}
