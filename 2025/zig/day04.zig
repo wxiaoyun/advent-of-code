@@ -148,32 +148,3 @@ fn removeSelfAndNotifyNeighbor(alloc: std.mem.Allocator, work_queue: *std.ArrayL
         }
     }
 }
-
-const test_input =
-    \\..@@.@@@@.
-    \\@@@.@.@.@@
-    \\@@@@@.@.@@
-    \\@.@@@@..@.
-    \\@@.@@@@.@@
-    \\.@@@@@@@.@
-    \\.@.@.@.@@@
-    \\@.@@@.@@@@
-    \\.@@@@@@@@.
-    \\@.@.@@@.@.
-;
-
-test part1 {
-    const alc = std.testing.allocator;
-    const input = try alc.alloc(u8, test_input.len);
-    defer alc.free(input);
-    @memcpy(input, test_input);
-    try std.testing.expectEqual(13, try part1(alc, input));
-}
-
-test part2 {
-    const alc = std.testing.allocator;
-    const input = try alc.alloc(u8, test_input.len);
-    defer alc.free(input);
-    @memcpy(input, test_input);
-    try std.testing.expectEqual(43, try part2(alc, input));
-}

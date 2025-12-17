@@ -50,20 +50,7 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
 
 #[cfg(test)]
 mod test {
-    use indoc::indoc;
-
-    const TEST_INPUT: &str = indoc! {"
-        L68
-        L30
-        R48
-        L5
-        R60
-        L55
-        L1
-        L99
-        R14
-        L82
-    "};
+    const TEST_INPUT: &str = include_str!("../../../input/2025_01_1.test.txt");
 
     #[test]
     fn test_part1() {

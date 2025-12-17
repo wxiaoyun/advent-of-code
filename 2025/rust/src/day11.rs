@@ -95,41 +95,15 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
 
 #[cfg(test)]
 mod test {
-    use indoc::indoc;
+    const TEST_INPUT: &str = include_str!("../../../input/2025_11_1.test.txt");
 
-    const TEST_INPUT: &str = indoc! {"
-        aaa: you hhh
-        you: bbb ccc
-        bbb: ddd eee
-        ccc: ddd eee fff
-        ddd: ggg
-        eee: out
-        fff: out
-        ggg: out
-        hhh: ccc fff iii
-        iii: out
-    "};
 
     #[test]
     fn test_part1() {
         assert_eq!(5, super::part_one(TEST_INPUT));
     }
 
-    const TEST_INPUT2: &str = indoc! {"
-        svr: aaa bbb
-        aaa: fft
-        fft: ccc
-        bbb: tty
-        tty: ccc
-        ccc: ddd eee
-        ddd: hub
-        hub: fff
-        eee: dac
-        dac: fff
-        fff: ggg hhh
-        ggg: out
-        hhh: out
-    "};
+    const TEST_INPUT2: &str = include_str!("../../../input/2025_11_2.test.txt");
 
     #[test]
     fn test_part2() {

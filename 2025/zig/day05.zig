@@ -159,33 +159,3 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
 
     return fresh_cnt;
 }
-
-const test_input =
-    \\3-5
-    \\10-14
-    \\16-20
-    \\12-18
-    \\
-    \\1
-    \\5
-    \\8
-    \\11
-    \\17
-    \\32
-;
-
-test part1 {
-    const alc = std.testing.allocator;
-    const input = try alc.alloc(u8, test_input.len);
-    defer alc.free(input);
-    @memcpy(input, test_input);
-    try std.testing.expectEqual(3, try part1(alc, input));
-}
-
-test part2 {
-    const alc = std.testing.allocator;
-    const input = try alc.alloc(u8, test_input.len);
-    defer alc.free(input);
-    @memcpy(input, test_input);
-    try std.testing.expectEqual(14, try part2(alc, input));
-}

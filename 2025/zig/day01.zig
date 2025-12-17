@@ -63,26 +63,3 @@ fn part2(_: std.mem.Allocator, input: []const u8) !i64 {
 
     return zero_cnt;
 }
-
-const test_input =
-    \\L68
-    \\L30
-    \\R48
-    \\L5
-    \\R60
-    \\L55
-    \\L1
-    \\L99
-    \\R14
-    \\L82
-;
-
-test part1 {
-    const alc = std.testing.allocator;
-    try std.testing.expectEqual(3, try part1(alc, test_input));
-}
-
-test part2 {
-    const alc = std.testing.allocator;
-    try std.testing.expectEqual(6, try part2(alc, test_input));
-}

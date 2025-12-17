@@ -67,14 +67,7 @@ pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>, buf: &mut Vec<
 
 #[cfg(test)]
 mod test {
-    use indoc::indoc;
-
-    const TEST_INPUT: &str = indoc! {"
-        987654321111111
-        811111111111119
-        234234234234278
-        818181911112111
-    "};
+    const TEST_INPUT: &str = include_str!("../../../input/2025_03_1.test.txt");
 
     #[test]
     fn test_part1() {

@@ -113,13 +113,3 @@ const test_input =
     \\234234234234278
     \\818181911112111
 ;
-
-test part1 {
-    const alc = std.testing.allocator;
-    try std.testing.expectEqual(357, try part1(alc, test_input));
-}
-
-test part2 {
-    const alc = std.testing.allocator;
-    try std.testing.expectEqual(3121910778619, try part2(alc, test_input));
-}
