@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import sys
+import argparse
 import os
 import subprocess
-import argparse
+import sys
 from datetime import datetime
 
 INPUT_FOLDER_NAME = "input"
@@ -11,6 +11,10 @@ INPUT_FOLDER_NAME = "input"
 
 def input_path_of(year: int, day: int) -> str:
     return f"{INPUT_FOLDER_NAME}/{year}_{day:0>2}.txt"
+
+
+def test_input_path_of(year: int, day: int, part: int) -> str:
+    return f"{INPUT_FOLDER_NAME}/{year}_{day:0>2}_{part}.test.txt"
 
 
 if __name__ == "__main__":
