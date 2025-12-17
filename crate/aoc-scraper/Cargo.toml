@@ -1,5 +1,5 @@
 [package]
-name = "scraper"
+name = "aoc-scraper"
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -14,3 +14,4 @@ anyhow = { workspace = true }
 clap = { workspace = true }
 tap = { workspace = true }
 util = { path = "../util" }
+scraper = "0.25"
