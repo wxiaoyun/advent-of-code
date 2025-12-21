@@ -100,7 +100,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "-I",
         "--input-file",
-        help="Input file path. Defaults to <year>/input/<day>.txt",
+        help="Input file path, defaults to the scraper download path",
         type=str,
     )
     parser.add_argument(
