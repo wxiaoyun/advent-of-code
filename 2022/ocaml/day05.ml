@@ -90,7 +90,32 @@ let part_one input =
        []
   |> List.rev |> List.to_seq |> String.of_seq
 
-let part_two input = failwith input
+let part_two input =
+  let stacks, moves = parse_input input in
+
+  let stacks =
+    moves
+    |> List.fold_left
+         (fun stacks (n, src, dst) ->
+           let src, dst = (src - 1, dst - 1) in
+
+           let tmp = List.take n stacks.(src) in
+           let src_stack = List.drop n stacks.(src) in
+           let dst_stack = tmp @ stacks.(dst) in
+
+           Array.set stacks src src_stack;
+           Array.set stacks dst dst_stack;
+
+           stacks)
+         stacks
+  in
+
+  stacks
+  |> Array.fold_left
+       (fun ls stack ->
+         match stack with a :: _ -> a :: ls | _ -> failwith "empty stack")
+       []
+  |> List.rev |> List.to_seq |> String.of_seq
 
 let () =
   let part = Aoc.Util.parse_args () in
