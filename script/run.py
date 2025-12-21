@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import subprocess
 import sys
 from datetime import datetime
 from typing import IO
 
 
-def pipe_input(args: argparse.Namespace) -> IO:
+def get_input_io(args: argparse.Namespace) -> IO:
     if not sys.stdin.isatty():
         return sys.stdin
 
@@ -16,12 +17,22 @@ def pipe_input(args: argparse.Namespace) -> IO:
 
     import scrape
 
-    try:
-        scraped_file_path = (
-            scrape.input_path_of(args.year, args.day)
-            if args.test == 0
-            else scrape.test_input_path_of(args.year, args.day, args.test)
+    scraped_file_path = (
+        scrape.input_path_of(args.year, args.day)
+        if args.test == 0
+        else scrape.test_input_path_of(args.year, args.day, args.test)
+    )
+
+    if args.auto_download and not os.path.exists(scraped_file_path):
+        print(f"Downloading input for year {args.year}, day {args.day}")
+        result = scrape.scrape(
+            args.year,
+            args.day,
         )
+        if result.returncode != 0:
+            sys.exit(result.returncode)
+
+    try:
         return open(scraped_file_path, "r")
     except:
         print(
@@ -31,7 +42,7 @@ def pipe_input(args: argparse.Namespace) -> IO:
         sys.exit(1)
 
 
-def run_rust(args: argparse.Namespace) -> None:
+def run_rust(args: argparse.Namespace, input: IO) -> None:
     cargo_args = ["cargo", "run", "-p", f"aoc-{args.year}"]
     if args.fast:
         cargo_args.extend(["--release"])
@@ -39,11 +50,11 @@ def run_rust(args: argparse.Namespace) -> None:
     sub_cmd_args = ["--", str(args.day), str(args.part)]
     cargo_args.extend(sub_cmd_args)
 
-    result = subprocess.run(cargo_args, stdin=pipe_input(args))
+    result = subprocess.run(cargo_args, stdin=input)
     sys.exit(result.returncode)
 
 
-def run_zig(args: argparse.Namespace) -> None:
+def run_zig(args: argparse.Namespace, input: IO) -> None:
     zig_args = ["zig", "build", f"aoc-{args.year}-{args.day:0>2}"]
     if args.fast:
         zig_args.append("--release=fast")
@@ -51,11 +62,11 @@ def run_zig(args: argparse.Namespace) -> None:
     sub_cmd_args = ["--", str(args.part)]
     zig_args.extend(sub_cmd_args)
 
-    result = subprocess.run(zig_args, stdin=pipe_input(args))
+    result = subprocess.run(zig_args, stdin=input)
     sys.exit(result.returncode)
 
 
-def run_ocaml(args: argparse.Namespace) -> None:
+def run_ocaml(args: argparse.Namespace, input: IO) -> None:
     opam_args = ["opam", "exec"]
     dune_args = [
         "--",
@@ -70,7 +81,7 @@ def run_ocaml(args: argparse.Namespace) -> None:
     opam_args.extend(dune_args)
     opam_args.extend(sub_cmd_args)
 
-    result = subprocess.run(opam_args, stdin=pipe_input(args))
+    result = subprocess.run(opam_args, stdin=input)
     sys.exit(result.returncode)
 
 
@@ -93,6 +104,13 @@ if __name__ == "__main__":
         type=str,
     )
     parser.add_argument(
+        "-a",
+        "--auto-download",
+        help="Automatically download the input files to the default location and pipe to the program",
+        default=True,
+        action=argparse.BooleanOptionalAction,
+    )
+    parser.add_argument(
         "-t",
         "--test",
         help="Run with test input",
@@ -104,9 +122,10 @@ if __name__ == "__main__":
         "--fast",
         help="Run optimised code, if available.",
         default=False,
-        action=argparse.BooleanOptionalAction
+        action=argparse.BooleanOptionalAction,
     )
 
     args = parser.parse_args()
     runner = runners[args.language]
-    runner(args)
+    input = get_input_io(args)
+    runner(args, input)
