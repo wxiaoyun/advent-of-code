@@ -126,15 +126,12 @@ const FileSystem = struct {
 
     fn insertFile(self: *Self, name: []const u8, size: usize) !void {
         const alloc = self.arena.allocator();
-        const name_cp = try alloc.alloc(u8, name.len);
-        @memcpy(name_cp, name);
 
         switch (self.cwd.data) {
             .file => |_| @panic("file insertion into file"),
             .dir => |*dir| {
-                const res = try dir.getOrPut(alloc, name_cp);
+                const res = try dir.getOrPut(alloc, name);
                 if (res.found_existing) {
-                    alloc.free(name_cp);
                     return;
                 }
 
@@ -147,15 +144,12 @@ const FileSystem = struct {
 
     fn insertDir(self: *Self, name: []const u8) !void {
         const alloc = self.arena.allocator();
-        const name_cp = try alloc.alloc(u8, name.len);
-        @memcpy(name_cp, name);
 
         switch (self.cwd.data) {
             .file => |_| @panic("file insertion into file"),
             .dir => |*dir| {
-                const res = try dir.getOrPut(alloc, name_cp);
+                const res = try dir.getOrPut(alloc, name);
                 if (res.found_existing) {
-                    alloc.free(name_cp);
                     return;
                 }
 
@@ -166,7 +160,7 @@ const FileSystem = struct {
         }
     }
 
-    fn changeDir(self: *Self, path: []const u8) !void {
+    fn changeDir(self: *Self, path: []const u8) void {
         if (std.mem.eql(u8, path, "/")) {
             self.cwd = self.root;
             return;
@@ -182,10 +176,7 @@ const FileSystem = struct {
             .dir => |dir| dir,
         };
 
-        const path_cp = try self.arena.allocator().alloc(u8, path.len);
-        defer self.arena.allocator().free(path_cp);
-        @memcpy(path_cp, path);
-        self.cwd = dir.getEntry(path_cp).?.value_ptr;
+        self.cwd = dir.getEntry(path).?.value_ptr;
     }
 };
 
@@ -202,7 +193,7 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
 
         if (std.mem.eql(u8, cmd_name, "cd")) {
             const dir_name = cmd_iter.next().?;
-            try fs.changeDir(dir_name);
+            fs.changeDir(dir_name);
             continue;
         }
 
@@ -241,7 +232,7 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
 
         if (std.mem.eql(u8, cmd_name, "cd")) {
             const dir_name = cmd_iter.next().?;
-            try fs.changeDir(dir_name);
+            fs.changeDir(dir_name);
             continue;
         }
 
