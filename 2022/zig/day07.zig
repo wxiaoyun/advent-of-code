@@ -53,7 +53,7 @@ const File = struct {
         }
     }
 
-    fn sumSizes(self: *Self, limit: usize) usize {
+    fn sumWithinLimit(self: *Self, limit: usize) usize {
         switch (self.data) {
             .file => return 0,
             .dir => |d| {
@@ -61,7 +61,7 @@ const File = struct {
 
                 var iter = d.iterator();
                 while (iter.next()) |f| {
-                    total_sizes += f.value_ptr.sumSizes(limit);
+                    total_sizes += f.value_ptr.sumWithinLimit(limit);
                 }
 
                 const dir_size = self.size();
@@ -70,6 +70,28 @@ const File = struct {
                 }
 
                 return total_sizes;
+            },
+        }
+    }
+
+    fn smallestDirAboveLimit(self: *Self, limit: usize) usize {
+        switch (self.data) {
+            .file => return std.math.maxInt(usize),
+            .dir => |d| {
+                var best: usize = std.math.maxInt(usize);
+
+                const self_size = self.size();
+                if (self_size >= limit) {
+                    best = self_size;
+                }
+
+                var iter = d.iterator();
+                while (iter.next()) |f| {
+                    const child_best = f.value_ptr.smallestDirAboveLimit(limit);
+                    best = @min(best, child_best);
+                }
+
+                return best;
             },
         }
     }
@@ -203,9 +225,48 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
         }
     }
 
-    return @intCast(fs.root.sumSizes(100000));
+    return @intCast(fs.root.sumWithinLimit(100000));
 }
 
-fn part2(_: std.mem.Allocator, _: []u8) !i64 {
-    return 0;
+fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
+    var fs = try FileSystem.init(alloc);
+    defer fs.deinit();
+
+    var cmd_hist_iter = std.mem.splitSequence(u8, input, "$ ");
+    while (cmd_hist_iter.next()) |cmd_hist| {
+        var line_iter = std.mem.splitScalar(u8, cmd_hist, '\n');
+        const cmd = line_iter.next().?;
+        var cmd_iter = std.mem.splitScalar(u8, cmd, ' ');
+        const cmd_name = cmd_iter.next().?;
+
+        if (std.mem.eql(u8, cmd_name, "cd")) {
+            const dir_name = cmd_iter.next().?;
+            try fs.changeDir(dir_name);
+            continue;
+        }
+
+        if (std.mem.eql(u8, cmd_name, "ls")) {
+            while (line_iter.next()) |output_line| {
+                if (output_line.len == 0) {
+                    continue;
+                }
+
+                var output_iter = std.mem.splitScalar(u8, output_line, ' ');
+                const data = output_iter.next().?;
+                const name = output_iter.next().?;
+
+                if (std.mem.eql(u8, data, "dir")) {
+                    try fs.insertDir(name);
+                } else {
+                    try fs.insertFile(name, try std.fmt.parseInt(usize, data, 10));
+                }
+            }
+        }
+    }
+
+    const root_size = fs.root.size();
+    const cur_free_size = 70000000 - root_size;
+    const additional_free_size = 30000000 - cur_free_size;
+    const dir_to_free_size = fs.root.smallestDirAboveLimit(additional_free_size);
+    return @intCast(dir_to_free_size);
 }
