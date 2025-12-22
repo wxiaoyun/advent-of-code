@@ -1,0 +1,60 @@
+const std = @import("std");
+
+const util = @import("util");
+
+pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    const alloc = gpa.allocator();
+    defer _ = gpa.deinit();
+
+    const args = try util.parseArgs();
+    const input = try util.readInputFromStdin(alloc);
+    defer alloc.free(input);
+
+    const result = switch (args.part) {
+        1 => try part1(alloc, input),
+        2 => try part2(alloc, input),
+        else => @panic("Illegal part"),
+    };
+
+    std.debug.print("Result: {}\n", .{result});
+}
+
+const CharMap = std.AutoHashMap(u8, u8);
+
+fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
+    var cs = CharMap.init(alloc);
+    defer cs.deinit();
+    try cs.ensureTotalCapacity(5);
+
+    for (input, 0..) |c, i| {
+        {
+            const entry = cs.getOrPutAssumeCapacity(c);
+            if (entry.found_existing) {
+                entry.value_ptr.* += 1;
+            } else {
+                entry.value_ptr.* = 1;
+            }
+        }
+
+        if (i >= 4) {
+            const key = input[i - 4];
+            const entry = cs.getEntry(key).?;
+            entry.value_ptr.* -= 1;
+            if (entry.value_ptr.* == 0) {
+                _ = cs.remove(key);
+            }
+        }
+
+        if (cs.unmanaged.size == 4) {
+            const idx: i64 = @intCast(i);
+            return idx + 1;
+        }
+    }
+
+    return -1;
+}
+
+fn part2(_: std.mem.Allocator, _: []u8) !i64 {
+    return 0;
+}
