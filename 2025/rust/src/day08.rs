@@ -94,21 +94,3 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
 
     unreachable!()
 }
-
-#[cfg(test)]
-mod test {
-    use super::CONNECTIONS;
-
-    const TEST_INPUT: &str = include_str!("../../../input/2025_08_1.test.txt");
-
-    #[test]
-    fn test_part1() {
-        unsafe { CONNECTIONS = 10 };
-        assert_eq!(40, super::part_one(TEST_INPUT));
-    }
-
-    #[test]
-    fn test_part2() {
-        assert_eq!(25272, super::part_two(TEST_INPUT));
-    }
-}

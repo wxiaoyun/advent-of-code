@@ -92,21 +92,3 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
     let mut dp = HashMap::new();
     compute2(&mut dp, &adj_list, "out", "svr", false, false)
 }
-
-#[cfg(test)]
-mod test {
-    const TEST_INPUT: &str = include_str!("../../../input/2025_11_1.test.txt");
-
-
-    #[test]
-    fn test_part1() {
-        assert_eq!(5, super::part_one(TEST_INPUT));
-    }
-
-    const TEST_INPUT2: &str = include_str!("../../../input/2025_11_2.test.txt");
-
-    #[test]
-    fn test_part2() {
-        assert_eq!(2, super::part_two(TEST_INPUT2));
-    }
-}

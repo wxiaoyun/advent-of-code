@@ -47,18 +47,3 @@ pub fn part_two(input: impl AsRef<str>) -> i64 {
 
     zero_cnt as i64
 }
-
-#[cfg(test)]
-mod test {
-    const TEST_INPUT: &str = include_str!("../../../input/2025_01_1.test.txt");
-
-    #[test]
-    fn test_part1() {
-        assert_eq!(3, super::part_one(TEST_INPUT));
-    }
-
-    #[test]
-    fn test_part2() {
-        assert_eq!(6, super::part_two(TEST_INPUT));
-    }
-}

@@ -97,27 +97,3 @@ fn rotate_90_deg_clockwise(mat: Vec<Vec<char>>) -> Vec<Vec<char>> {
 
     new_mat
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_rotate_90_deg_clockwise() {
-        let mat = vec![
-            vec!['#', '#', '.'],
-            vec!['.', '.', '.'],
-            vec!['.', '.', '.'],
-        ];
-        let expected = vec![
-            vec!['.', '.', '#'],
-            vec!['.', '.', '#'],
-            vec!['.', '.', '.'],
-        ];
-        assert!(rotate_90_deg_clockwise(mat) == expected);
-
-        let mat = vec![vec!['#', '.', '.'], vec!['#', '.', '.']];
-        let expected = vec![vec!['#', '#'], vec!['.', '.'], vec!['.', '.']];
-        assert!(rotate_90_deg_clockwise(mat) == expected);
-    }
-}

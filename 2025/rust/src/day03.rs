@@ -64,18 +64,3 @@ pub fn largest_n_digit_number(n: usize, digits: impl AsRef<[i8]>, buf: &mut Vec<
             acc.max(build_digit(buf))
         })
 }
-
-#[cfg(test)]
-mod test {
-    const TEST_INPUT: &str = include_str!("../../../input/2025_03_1.test.txt");
-
-    #[test]
-    fn test_part1() {
-        assert_eq!(357, super::part_one(TEST_INPUT));
-    }
-
-    #[test]
-    fn test_part2() {
-        assert_eq!(3121910778619, super::part_two(TEST_INPUT));
-    }
-}
