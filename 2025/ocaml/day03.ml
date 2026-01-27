@@ -1,19 +1,19 @@
 let part_one input =
   let largest_two_digit_number digit (largest_num, largest_right_digit) =
     let digit = int_of_char digit - int_of_char '0' in
-    if largest_right_digit < 0 then (digit, largest_num)
+    if largest_right_digit < 0 then (digit, digit)
     else
       let largest_num =
         Int.max largest_num @@ ((digit * 10) + largest_right_digit)
       in
       let largest_right_digit = Int.max largest_right_digit digit in
-      (largest_right_digit, largest_num)
+      (largest_num, largest_right_digit)
   in
 
   input |> String.split_on_char '\n'
   |> List.map (fun line ->
-         String.fold_right largest_two_digit_number line (-1, 0))
-  |> List.map (fun (_, largest_num) -> largest_num)
+      String.fold_right largest_two_digit_number line (0, -1))
+  |> List.map (fun (largest_num, _) -> largest_num)
   |> List.fold_left Int.add 0
 
 let part_two input =

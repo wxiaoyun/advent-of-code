@@ -112,7 +112,7 @@ fn part2(alloc: std.mem.Allocator, input: []const u8) !i64 {
         }
         mat.appendAssumeCapacity(r);
     }
-    const ncol = mat.items[0].len;
+    _ = mat.items[0].len;
 
     return 0;
 }
