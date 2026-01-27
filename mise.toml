@@ -1,12 +1,14 @@
 [tools]
 rust = "nightly"
+zig = "latest"
+opam = "latest"
 
 [env]
-AOC_SAVE_DIR = "input"
+AOC_INPUT_SAVE_DIR = "input"
 
 _.file = '.env'
 
-[tasks.run]
+[tasks.aoc]
 description = "AoC solution runner"
 usage = '''
 arg "<language>" help="Language to run" {
@@ -49,7 +51,7 @@ get_input_file() {
   fi
 
   if [ "$TEST" != "0" ]; then
-    echo "input/${YEAR}_${DAY_PADDED}_${TEST}.test.txt"
+    echo "input/${YEAR}_${DAY_PADDED}.test_${TEST}.txt"
   else
     echo "input/${YEAR}_${DAY_PADDED}.txt"
   fi
@@ -138,7 +140,7 @@ flag "-D --delay <delay>" {
 }
 flag "-o --output-dir <output-dir>" {
   help "Output directory for inputs"
-  env "AOC_SAVE_DIR"
+  env "AOC_INPUT_SAVE_DIR"
 }
 '''
 run = '''

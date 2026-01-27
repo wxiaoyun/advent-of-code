@@ -222,7 +222,7 @@ async fn scrape_puzzle_input(
                 OUTPUT_DIR
                     .get()
                     .unwrap()
-                    .join(format!("{}_{:0>2}_{}.test.txt", year, day, i + 1));
+                    .join(format!("{}_{:0>2}.test_{}.txt", year, day, i + 1));
             tokio::fs::write(path, html.as_bytes()).await.unwrap();
             println!(
                 "Saved puzzle input for Advent of Code {}/{:0>2}, part {}",
