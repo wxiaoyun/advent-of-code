@@ -5,7 +5,6 @@ rust = "nightly"
 AOC_SAVE_DIR = "input"
 
 _.file = '.env'
-_.python.venv = ".venv"
 
 [tasks.run]
 description = "AoC solution runner"
