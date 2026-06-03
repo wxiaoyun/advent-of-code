@@ -1,0 +1,105 @@
+#!/usr/bin/env sh
+set -e
+
+#MISE description = "AoC solution runner"
+#USAGE arg "<language>" help="Language to run" {
+#USAGE   choices "rust" "zig" "ocaml"
+#USAGE }
+#USAGE flag "-y --year <year>" help="Year to run"
+#USAGE flag "-d --day <day>" help="Day to run"
+#USAGE flag "-p --part <part>" help="Part to run" default="1" {
+#USAGE   choices "1" "2"
+#USAGE }
+#USAGE flag "-I --input-file <input-file>" help="Input file path"
+#USAGE flag "-a --auto-download" help="Automatically download input if missing" default=#true negate="--no-auto-download"
+#USAGE flag "-t --test <test>" help="Run with test input"
+#USAGE flag "-f --fast" help="Run optimised code"
+
+
+CURRENT_YEAR=$(date +%Y)
+CURRENT_DAY=$(date +%d | sed 's/^0*//')
+
+LANGUAGE="${usage_language?}"
+YEAR="${usage_year:-$CURRENT_YEAR}"
+DAY="${usage_day:-$CURRENT_DAY}"
+PART="${usage_part:-1}"
+INPUT_FILE="${usage_input_file:-}"
+AUTO_DOWNLOAD="${usage_auto_download:-true}"
+TEST="${usage_test:-0}"
+FAST="${usage_fast:-false}"
+
+# Pad day for filename formatting
+DAY_PADDED=$(printf "%02d" "$DAY")
+
+# Determine input file path
+get_input_file() {
+    if [ -n "$INPUT_FILE" ]; then
+        echo "$INPUT_FILE"
+        return
+    fi
+    
+    if [ "$TEST" != "0" ]; then
+        echo "input/${YEAR}_${DAY_PADDED}.test_${TEST}.txt"
+    else
+        echo "input/${YEAR}_${DAY_PADDED}.txt"
+    fi
+}
+
+# Check if stdin is piped
+if [ -t 0 ]; then
+    # No piped input, need to read from file
+    RESOLVED_INPUT_FILE=$(get_input_file)
+    
+    # Check if file exists, auto-download if needed
+    if [ ! -f "$RESOLVED_INPUT_FILE" ]; then
+        if [ "$AUTO_DOWNLOAD" = "true" ]; then
+            echo "Downloading input for year $YEAR, day $DAY"
+            mise run scrape --year "$YEAR" --day "$DAY" || exit $?
+        else
+            echo "Error: Input file not found at $RESOLVED_INPUT_FILE" >&2
+            echo "Run the scraper first or use --auto-download" >&2
+            exit 1
+        fi
+    fi
+    
+    # Check if file exists after potential download
+    if [ ! -f "$RESOLVED_INPUT_FILE" ]; then
+        echo "Error: Failed to get input file at $RESOLVED_INPUT_FILE" >&2
+        exit 1
+    fi
+    
+    # Run with file input
+    INPUT_REDIRECT="< $RESOLVED_INPUT_FILE"
+else
+    # Piped input
+    INPUT_REDIRECT=""
+fi
+
+case "$LANGUAGE" in
+    rust)
+        CMD="cargo run -p aoc-${YEAR}"
+        if [ "$FAST" = "true" ]; then
+            CMD="$CMD --release"
+        fi
+        CMD="$CMD -- $DAY $PART"
+    ;;
+    
+    zig)
+        CMD="zig build aoc-${YEAR}-${DAY_PADDED}"
+        if [ "$FAST" = "true" ]; then
+            CMD="$CMD --release=fast"
+        fi
+        CMD="$CMD -- $PART"
+    ;;
+    
+    ocaml)
+        CMD="opam exec -- dune exec ${YEAR}/ocaml/day${DAY_PADDED}.exe -- $PART"
+    ;;
+    *)
+        echo "Unknown language: $LANGUAGE" >&2
+        exit 1
+    ;;
+esac
+
+CMD="$CMD $INPUT_REDIRECT"
+eval "$CMD"

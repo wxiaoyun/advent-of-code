@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+set -e
+
+#MISE description = "AoC question scraper"
+#USAGE flag "-y --year <year>" {
+#USAGE   help "Year to scrape (defaults to current year)"
+#USAGE }
+#USAGE flag "-d --day <day>" {
+#USAGE   help "Day to scrape (defaults to current day)"
+#USAGE }
+#USAGE flag "-s --session-token <session-token>" {
+#USAGE   help "Advent of Code session token, if not provided, will load from .env"
+#USAGE   env "ADVENT_OF_CODE_SESSION"
+#USAGE }
+#USAGE flag "-m --max-retries <max-retries>" {
+#USAGE   help "Maximum number of retries"
+#USAGE   default "3"
+#USAGE }
+#USAGE flag "-D --delay <delay>" {
+#USAGE   help "Delay between retries in seconds"
+#USAGE   default "5"
+#USAGE }
+#USAGE flag "-o --output-dir <output-dir>" {
+#USAGE   help "Output directory for inputs"
+#USAGE   env "AOC_INPUT_SAVE_DIR"
+#USAGE }
+
+CURRENT_YEAR=$(date +%Y)
+CURRENT_DAY=$(date +%d | sed 's/^0*//')
+
+YEAR=${usage_year:-$CURRENT_YEAR}
+DAY=${usage_day:-$CURRENT_DAY}
+
+cargo run -p aoc-scraper --release -- \
+  --year "$YEAR" \
+  --day "$DAY" \
+  --max-retries ${usage_max_retries} \
+  --delay ${usage_delay} \
+  --output-dir ${usage_output_dir} \
+  --session-token ${usage_session_token}
