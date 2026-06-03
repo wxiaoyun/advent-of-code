@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+# [MISE] description = "Generate code skeleton"
+# [USAGE] arg "<language>" help="Programming language" {
+# [USAGE]   choices "rust" "zig" "ocaml"
+# [USAGE] }
+# [USAGE] flag "-y --year <year>" help="Year"
+# [USAGE] flag "-d --day <day>" help="Day"
+# [USAGE] flag "-f --force" global=#true
+
+import sys
+from pathlib import Path
+
+
+def main():
+    from argparse import ArgumentParser
+
+    ap = ArgumentParser()
+    ap.add_argument("language")
+    ap.add_argument("-y", "--year", type=int)
+    ap.add_argument("-d", "--day", type=int)
+    ap.add_argument("-f", "--force", action="store_true")
+    args = ap.parse_args()
+
+    lang = str(args.language)
+    template = Path("template") / lang
+    assert template.exists() and template.is_file()
+    content = template.read_bytes()
+
+    out = Path(str(args.year)) / lang
+    match lang:
+        case "rust":
+            out = out / "src" / f"day{args.day:0>2}.rs"
+        case "zig":
+            out = out / f"day{args.day:0>2}.zig"
+        case "ocaml":
+            out = out / f"day{args.day:0>2}.ml"
+        case _:
+            print(f"Template for {lang} does not exist")
+            sys.exit(1)
+
+    if out.exists() and not args.force:
+        print(f"{out} already exists, skipping")
+        sys.exit(1)
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes(content)
+    print(f"Copied {lang} template")
+
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

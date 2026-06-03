@@ -1,0 +1,13 @@
+let part_one input = ""
+
+let part_two input = ""
+
+let () =
+  let part = Aoc.Util.parse_args () in
+  let input = Aoc.Util.read_input_from_stdin () in
+
+  let result =
+    match part with PartOne -> part_one input | PartTwo -> part_two input
+  in
+
+  Printf.printf "Result: %d\n" result
