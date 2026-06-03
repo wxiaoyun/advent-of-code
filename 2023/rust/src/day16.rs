@@ -35,7 +35,40 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
 }
 
 pub fn part_two(input: impl AsRef<str>) -> i64 {
-    0
+    let grid = parse_input(input);
+    let (n, m) = (grid.len(), grid[0].len());
+
+    let mut starting_configs = Vec::with_capacity(n * 2 + m * 2);
+    starting_configs.extend((0..n).map(|r| (r, 0, RIGHT)));
+    starting_configs.extend((0..n).map(|r| (r, m - 1, LEFT)));
+    starting_configs.extend((0..m).map(|c| (0, c, DOWN)));
+    starting_configs.extend((0..m).map(|c| (n - 1, c, UP)));
+
+    let mut best = 0;
+    for conf in starting_configs {
+        let mut beams = vec![conf];
+
+        let mut visited = HashSet::new();
+        while let Some(state) = beams.pop() {
+            if visited.contains(&state) {
+                continue;
+            }
+            visited.insert(state.clone());
+
+            let (r, c, dir) = state;
+            let new_beams = step(&grid, r, c, dir);
+            beams.extend(new_beams);
+        }
+
+        best = visited
+            .into_iter()
+            .map(|(r, c, _)| (r, c))
+            .collect::<HashSet<_>>()
+            .len()
+            .max(best);
+    }
+
+    best as i64
 }
 
 fn parse_input(input: impl AsRef<str>) -> Vec<Vec<char>> {
