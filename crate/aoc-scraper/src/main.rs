@@ -268,6 +268,12 @@ async fn fetch_input(cli: Client, year: i64, day: i64, max_retries: u8, delay: u
         tokio::time::sleep(Duration::from_secs(delay as u64)).await;
     };
 
+    if input_text.contains("Please log in") {
+        return Err(anyhow!(
+            "Advent of Code session token not provided or expired"
+        ));
+    }
+
     let path = OUTPUT_DIR
         .get()
         .unwrap()
