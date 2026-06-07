@@ -2,10 +2,11 @@ use std::{collections::HashMap, ffi::c_uchar, str::FromStr};
 
 const ACCEPT: &str = "A";
 const REJECT: &str = "R";
+const IN: &str = "in";
 
 pub fn part_one(input: impl AsRef<str>) -> i64 {
     let (workflows, parts) = parse_input(input);
-    let Some(init_wf) = workflows.get(&"in".to_string()) else {
+    let Some(init_wf) = workflows.get(&IN.to_string()) else {
         unreachable!()
     };
 
@@ -21,7 +22,6 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
                         if !ok {
                             continue;
                         }
-
                         outcome
                     }
                     Rule::Outcome(j) => j.clone(),
