@@ -1,4 +1,4 @@
-use std::{collections::HashMap, ffi::c_uchar, str::FromStr};
+use std::{collections::HashMap, str::FromStr};
 
 const ACCEPT: &str = "A";
 const REJECT: &str = "R";
@@ -48,7 +48,69 @@ pub fn part_one(input: impl AsRef<str>) -> i64 {
 }
 
 pub fn part_two(input: impl AsRef<str>) -> i64 {
-    0
+    let (workflows, parts) = parse_input(input);
+
+    let mut full_range = HashMap::new();
+    full_range.extend("xmas".chars().map(|ch| {
+        (
+            ch,
+            Range {
+                start: 1,
+                end: 4001,
+            },
+        )
+    }));
+
+    fn search(
+        wfs: &HashMap<String, Vec<Rule>>,
+        part_ranges: &HashMap<char, Range>,
+        wf_name: String,
+        wf_index: usize,
+    ) -> i64 {
+        let rule = wfs.get(&wf_name).and_then(|wf| wf.get(wf_index)).unwrap();
+
+        let t = match rule {
+            Rule::Outcome(o) if o == ACCEPT => {
+                return part_ranges
+                    .values()
+                    .fold(1, |acc, r| acc * (r.end - r.start));
+            }
+            Rule::Outcome(o) if o == REJECT => {
+                return 0;
+            }
+            Rule::Outcome(o) => {
+                return search(wfs, part_ranges, o.clone(), 0);
+            }
+            Rule::Test(t) => t,
+        };
+
+        let mut counts = 0;
+
+        // Reject case:
+        let mut rej_case_ranges = part_ranges.clone();
+        t.shrink(rej_case_ranges.get_mut(&t.attr).unwrap(), true);
+        counts += search(wfs, &mut rej_case_ranges, wf_name, wf_index + 1);
+
+        let mut accept_case_ranges = part_ranges.clone();
+        t.shrink(accept_case_ranges.get_mut(&t.attr).unwrap(), false);
+        counts += match &t.outcome {
+            o if o == ACCEPT => accept_case_ranges
+                .values()
+                .fold(1, |acc, r| acc * (r.end - r.start)),
+            o if o == REJECT => 0,
+            o => search(wfs, &accept_case_ranges, o.clone(), 0),
+        };
+
+        counts
+    }
+
+    search(&workflows, &full_range, IN.to_string(), 0)
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+struct Range {
+    start: i64,
+    end: i64,
 }
 
 #[derive(Debug)]
@@ -72,6 +134,28 @@ impl Test {
         };
 
         (ok, self.outcome.clone())
+    }
+
+    fn shrink(&self, r: &mut Range, negate: bool) {
+        let ok = match self.cmp {
+            '<' => {
+                if negate {
+                    // >=
+                    r.start = self.threshold;
+                } else {
+                    r.end = self.threshold;
+                }
+            }
+            '>' => {
+                if negate {
+                    // <=
+                    r.end = self.threshold + 1;
+                } else {
+                    r.start = self.threshold + 1;
+                }
+            }
+            _ => unreachable!(),
+        };
     }
 }
 
