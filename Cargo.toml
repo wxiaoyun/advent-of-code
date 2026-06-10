@@ -1,6 +1,13 @@
 [workspace]
 resolver = "3"
-members = ["2023/rust", "2024/rust", "2025/rust", "crate/aoc-scraper", "crate/util", "crate/util-macro"]
+members = [
+  "2023/rust",
+  "2024/rust",
+  "2025/rust",
+  "crate/aoc-scraper",
+  "crate/util",
+  "crate/util-macro",
+]
 
 [workspace.package]
 version = "0.1.0"
@@ -20,6 +27,7 @@ indoc = "2"
 tap = "1"
 regex = "1"
 extfn = "0.1"
+faststr = "0.2"
 
 image = "0.25"
 num-integer = "0.1"
