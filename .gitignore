@@ -4,6 +4,7 @@
 **/bin/
 **/vendor
 **/input/
+**/out/
 **/tmp/
 **/.DS_Store
 

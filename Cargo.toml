@@ -28,6 +28,7 @@ tap = "1"
 regex = "1"
 extfn = "0.1"
 faststr = "0.2"
+num = "0.4"
 
 image = "0.25"
 num-integer = "0.1"

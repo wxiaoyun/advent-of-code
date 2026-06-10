@@ -6,5 +6,6 @@ edition = { workspace = true }
 num-integer = { workspace = true }
 trie-rs = { workspace = true }
 util = { path = "../../crate/util" }
-faststr = {workspace = true}
+faststr = { workspace = true }
 tap.workspace = true
+num.workspace = true
