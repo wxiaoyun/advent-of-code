@@ -98,6 +98,7 @@ dependencies = [
  "faststr",
  "num",
  "num-integer",
+ "rayon",
  "tap",
  "trie-rs",
  "util",

@@ -9,3 +9,4 @@ util = { path = "../../crate/util" }
 faststr = { workspace = true }
 tap.workspace = true
 num.workspace = true
+rayon.workspace = true
