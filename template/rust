@@ -1,7 +1,13 @@
 pub fn part_one(input: impl AsRef<str>) -> i64 {
+    let _ = parse_input(input);
+
     unimplemented!()
 }
 
 pub fn part_two(input: impl AsRef<str>) -> i64 {
+    let _ = parse_input(input);
+
     unimplemented!()
 }
+
+fn parse_input(input: impl AsRef<str>) {}
