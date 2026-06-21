@@ -2,22 +2,18 @@ const std = @import("std");
 
 const util = @import("util");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const alloc = gpa.allocator();
-    defer _ = gpa.deinit();
-
-    const args = try util.parseArgs();
-    const input = try util.readInputFromStdin(alloc);
-    defer alloc.free(input);
+pub fn main(init: std.process.Init) !void {
+    const args = try util.parseArgs(init);
+    const input = try util.readInputFromStdin(init);
+    defer init.gpa.free(input);
 
     const result = switch (args.part) {
-        1 => try part1(alloc, input),
-        2 => try part2(alloc, input),
+        1 => try part1(init.gpa, input),
+        2 => try part2(init.gpa, input),
         else => @panic("Illegal part"),
     };
 
-    std.debug.print("Result: {}\n", .{result});
+    std.debug.print("{}\n", .{result});
 }
 
 const File = struct {
@@ -128,7 +124,7 @@ const FileSystem = struct {
         const alloc = self.arena.allocator();
 
         switch (self.cwd.data) {
-            .file => |_| @panic("file insertion into file"),
+            .file => @panic("file insertion into file"),
             .dir => |*dir| {
                 const res = try dir.getOrPut(alloc, name);
                 if (res.found_existing) {
@@ -146,7 +142,7 @@ const FileSystem = struct {
         const alloc = self.arena.allocator();
 
         switch (self.cwd.data) {
-            .file => |_| @panic("file insertion into file"),
+            .file => @panic("file insertion into file"),
             .dir => |*dir| {
                 const res = try dir.getOrPut(alloc, name);
                 if (res.found_existing) {
@@ -172,7 +168,7 @@ const FileSystem = struct {
         }
 
         const dir = switch (self.cwd.data) {
-            .file => |_| @panic("cwd is a not a directory"),
+            .file => @panic("cwd is a not a directory"),
             .dir => |dir| dir,
         };
 

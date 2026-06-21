@@ -6,21 +6,23 @@ const Args = struct {
     part: u8 = 1,
 };
 
-pub fn parseArgs() !Args {
-    if (std.os.argv.len < 2) {
+pub fn parseArgs(init: std.process.Init) !Args {
+    const args = try init.minimal.args.toSlice(init.gpa);
+    defer init.gpa.free(args);
+    if (args.len < 2) {
         @panic("Positional argument part is required");
     }
 
-    const part_str = std.mem.span(std.os.argv[1]);
+    const part_str = std.mem.span(args[1].ptr);
     const part = try std.fmt.parseInt(u8, part_str, 10);
     return Args{ .part = part };
 }
 
-pub fn readInputFromStdin(allocator: std.mem.Allocator) ![]u8 {
-    const stdin = std.fs.File.stdin();
-    const stat = try stdin.stat();
+pub fn readInputFromStdin(init: std.process.Init) ![]u8 {
+    const stdin = std.Io.File.stdin();
+    const stat = try stdin.stat(init.io);
 
     var reader_buf: [1024]u8 = undefined;
-    var reader = stdin.reader(&reader_buf);
-    return try reader.interface.readAlloc(allocator, stat.size);
+    var reader = stdin.reader(init.io, &reader_buf);
+    return try reader.interface.readAlloc(init.gpa, stat.size);
 }

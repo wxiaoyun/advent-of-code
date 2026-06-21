@@ -2,22 +2,18 @@ const std = @import("std");
 
 const util = @import("util");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const alloc = gpa.allocator();
-    defer _ = gpa.deinit();
-
-    const args = try util.parseArgs();
-    const input = try util.readInputFromStdin(alloc);
-    defer alloc.free(input);
+pub fn main(init: std.process.Init) !void {
+    const args = try util.parseArgs(init);
+    const input = try util.readInputFromStdin(init);
+    defer init.gpa.free(input);
 
     const result = switch (args.part) {
-        1 => try part1(alloc, input),
-        2 => try part2(alloc, input),
+        1 => try part1(init.gpa, input),
+        2 => try part2(init.gpa, input),
         else => @panic("Illegal part"),
     };
 
-    std.debug.print("Result: {}\n", .{result});
+    std.debug.print("{}\n", .{result});
 }
 
 fn part1(alloc: std.mem.Allocator, input: []const u8) !i64 {
@@ -44,9 +40,9 @@ fn part1(alloc: std.mem.Allocator, input: []const u8) !i64 {
     }
     const ncol = mat.items[0].len;
 
-    var observables = std.AutoArrayHashMap(usize, void).init(alloc);
-    defer observables.deinit();
-    try observables.ensureTotalCapacity(nrow * ncol);
+    var observables = std.AutoArrayHashMapUnmanaged(usize, void).empty;
+    defer observables.deinit(alloc);
+    try observables.ensureTotalCapacity(alloc, nrow * ncol);
 
     for (0..nrow) |i| {
         const row = mat.items[i];
@@ -87,7 +83,7 @@ fn part1(alloc: std.mem.Allocator, input: []const u8) !i64 {
         }
     }
 
-    return @intCast(observables.unmanaged.count());
+    return @intCast(observables.count());
 }
 
 fn part2(alloc: std.mem.Allocator, input: []const u8) !i64 {

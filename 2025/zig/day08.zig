@@ -2,22 +2,18 @@ const std = @import("std");
 
 const util = @import("util");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const alloc = gpa.allocator();
-    defer _ = gpa.deinit();
-
-    const args = try util.parseArgs();
-    const input = try util.readInputFromStdin(alloc);
-    defer alloc.free(input);
+pub fn main(init: std.process.Init) !void {
+    const args = try util.parseArgs(init);
+    const input = try util.readInputFromStdin(init);
+    defer init.gpa.free(input);
 
     const result = switch (args.part) {
-        1 => try part1(alloc, input),
-        2 => try part2(alloc, input),
+        1 => try part1(init.gpa, input),
+        2 => try part2(init.gpa, input),
         else => @panic("Illegal part"),
     };
 
-    std.debug.print("Result: {}\n", .{result});
+    std.debug.print("{}\n", .{result});
 }
 
 var CONNECTIONS: usize = 1000;
@@ -77,9 +73,9 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
         coords.appendAssumeCapacity(coord);
     }
 
-    var heap = MinTupleHeap.init(alloc, {});
-    defer heap.deinit();
-    try heap.ensureTotalCapacity(ncoords);
+    var heap = MinTupleHeap.initContext({});
+    defer heap.deinit(alloc);
+    try heap.ensureTotalCapacity(alloc, ncoords);
 
     for (0..ncoords) |i| {
         const ix = coords.items[i][0];
@@ -92,36 +88,36 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
 
             const dist_sq = std.math.pow(i64, ix - jx, 2) + std.math.pow(i64, iy - jy, 2) + std.math.pow(i64, iz - jz, 2);
 
-            try heap.add(.{ @intCast(dist_sq), i, j });
+            try heap.push(alloc, .{ @intCast(dist_sq), i, j });
         }
     }
 
     var uf = try util.UnionFind.init(alloc, ncoords);
     defer uf.deinit(alloc);
     for (0..CONNECTIONS) |_| {
-        const tuple = heap.removeOrNull() orelse break;
+        const tuple = heap.pop() orelse break;
         const i = tuple[1];
         const j = tuple[2];
         uf.@"union"(i, j);
     }
 
-    var map = std.AutoArrayHashMap(usize, usize).init(alloc);
-    try map.ensureTotalCapacity(ncoords);
-    defer map.deinit();
+    var map = std.AutoArrayHashMapUnmanaged(usize, usize).empty;
+    try map.ensureTotalCapacity(alloc, ncoords);
+    defer map.deinit(alloc);
     for (0..CONNECTIONS) |n| {
         const component = uf.find(n);
         _ = map.fetchPutAssumeCapacity(component, uf.rank[component]);
     }
 
-    var size_heap = MinSizeHeap.init(alloc, {});
-    defer size_heap.deinit();
-    try size_heap.ensureTotalCapacity(4);
+    var size_heap = MinSizeHeap.empty;
+    defer size_heap.deinit(alloc);
+    try size_heap.ensureTotalCapacity(alloc, 4);
 
     var map_iter = map.iterator();
     while (map_iter.next()) |e| {
-        try size_heap.add(e.value_ptr.*);
+        try size_heap.push(alloc, e.value_ptr.*);
         if (size_heap.items.len > 3) {
-            _ = size_heap.remove();
+            _ = size_heap.pop();
         }
     }
 
@@ -164,9 +160,9 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
         coords.appendAssumeCapacity(coord);
     }
 
-    var heap = MinTupleHeap.init(alloc, {});
-    defer heap.deinit();
-    try heap.ensureTotalCapacity(ncoords);
+    var heap = MinTupleHeap.empty;
+    defer heap.deinit(alloc);
+    try heap.ensureTotalCapacity(alloc, ncoords);
 
     for (0..ncoords) |i| {
         const ix = coords.items[i][0];
@@ -179,14 +175,14 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
 
             const dist_sq = std.math.pow(i64, ix - jx, 2) + std.math.pow(i64, iy - jy, 2) + std.math.pow(i64, iz - jz, 2);
 
-            try heap.add(.{ @intCast(dist_sq), i, j });
+            try heap.push(alloc, .{ @intCast(dist_sq), i, j });
         }
     }
 
     var uf = try util.UnionFind.init(alloc, ncoords);
     defer uf.deinit(alloc);
     while (true) {
-        const tuple = heap.removeOrNull() orelse break;
+        const tuple = heap.pop() orelse break;
         const i = tuple[1];
         const j = tuple[2];
         uf.@"union"(i, j);

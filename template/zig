@@ -2,22 +2,18 @@ const std = @import("std");
 
 const util = @import("util");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const alloc = gpa.allocator();
-    defer _ = gpa.deinit();
-
-    const args = try util.parseArgs();
-    const input = try util.readInputFromStdin(alloc);
-    defer alloc.free(input);
+pub fn main(init: std.process.Init) !void {
+    const args = try util.parseArgs(init);
+    const input = try util.readInputFromStdin(init);
+    defer init.gpa.free(input);
 
     const result = switch (args.part) {
-        1 => try part1(alloc, input),
-        2 => try part2(alloc, input),
+        1 => try part1(init.gpa, input),
+        2 => try part2(init.gpa, input),
         else => @panic("Illegal part"),
     };
 
-    std.debug.print("Result: {}\n", .{result});
+    std.debug.print("{}\n", .{result});
 }
 
 fn part1(_: std.mem.Allocator, input: []const u8) !i64 {

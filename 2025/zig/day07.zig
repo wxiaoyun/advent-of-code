@@ -2,30 +2,26 @@ const std = @import("std");
 
 const util = @import("util");
 
-pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    const alloc = gpa.allocator();
-    defer _ = gpa.deinit();
-
-    const args = try util.parseArgs();
-    const input = try util.readInputFromStdin(alloc);
-    defer alloc.free(input);
+pub fn main(init: std.process.Init) !void {
+    const args = try util.parseArgs(init);
+    const input = try util.readInputFromStdin(init);
+    defer init.gpa.free(input);
 
     const result = switch (args.part) {
-        1 => try part1(alloc, input),
-        2 => try part2(alloc, input),
+        1 => try part1(init.gpa, input),
+        2 => try part2(init.gpa, input),
         else => @panic("Illegal part"),
     };
 
-    std.debug.print("Result: {}\n", .{result});
+    std.debug.print("{}\n", .{result});
 }
 
 fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
-    const Set = std.AutoArrayHashMap(usize, void);
-    var beams = Set.init(alloc);
-    defer beams.deinit();
-    var tmp = Set.init(alloc);
-    defer tmp.deinit();
+    const Set = std.AutoArrayHashMapUnmanaged(usize, void);
+    var beams = try Set.init(alloc, &[_]usize{}, &[_]void{});
+    defer beams.deinit(alloc);
+    var tmp = try Set.init(alloc, &[_]usize{}, &[_]void{});
+    defer tmp.deinit(alloc);
 
     var splits: i64 = 0;
     var first_row: bool = true;
@@ -39,8 +35,8 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
         if (first_row) {
             @branchHint(.cold);
             first_row = false;
-            try beams.ensureTotalCapacity(row.len);
-            try tmp.ensureTotalCapacity(row.len);
+            try beams.ensureTotalCapacity(alloc, row.len);
+            try tmp.ensureTotalCapacity(alloc, row.len);
 
             for (row, 0..) |ch, j| {
                 if (ch == 'S') {
@@ -75,11 +71,11 @@ fn part1(alloc: std.mem.Allocator, input: []u8) !i64 {
 }
 
 fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
-    const Map = std.AutoArrayHashMap(usize, i64);
-    var beams = Map.init(alloc);
-    defer beams.deinit();
-    var tmp = Map.init(alloc);
-    defer tmp.deinit();
+    const Map = std.AutoArrayHashMapUnmanaged(usize, i64);
+    var beams = Map.empty;
+    defer beams.deinit(alloc);
+    var tmp = Map.empty;
+    defer tmp.deinit(alloc);
 
     var first_row: bool = true;
     var row_iter = std.mem.splitScalar(u8, input, '\n');
@@ -92,8 +88,8 @@ fn part2(alloc: std.mem.Allocator, input: []u8) !i64 {
         if (first_row) {
             @branchHint(.cold);
             first_row = false;
-            try beams.ensureTotalCapacity(row.len);
-            try tmp.ensureTotalCapacity(row.len);
+            try beams.ensureTotalCapacity(alloc, row.len);
+            try tmp.ensureTotalCapacity(alloc, row.len);
 
             for (row, 0..) |ch, j| {
                 if (ch == 'S') {
