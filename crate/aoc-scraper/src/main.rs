@@ -252,6 +252,9 @@ async fn fetch_input(cli: Client, year: i64, day: i64, max_retries: u8, delay: u
         let res = fetch_input().await;
         let e = match res {
             Ok(text) => {
+                if text.contains("404 Not Found") {
+                    return Err(anyhow!("No question found for day {day}"));
+                }
                 break text;
             }
             Err(e) => e,
